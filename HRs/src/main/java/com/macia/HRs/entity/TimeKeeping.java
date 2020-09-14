@@ -57,7 +57,9 @@ public class TimeKeeping implements Serializable {
     @Column(name = "IsDeleted")
     private Boolean isDeleted;
 
-
+    @Column()
+    private Integer nEventLogIdn;
+    
     @ManyToOne
     @JoinColumn(name = "EMP_ID")
     private Employee employee;
