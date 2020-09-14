@@ -1,6 +1,5 @@
 ﻿
 	-- CODE CHẤM CÔNG THÀNH CÔNG: 43->53 ,55, 58 -> 62
-	-- [and ((nEventIdn >= 43 and nEventIdn <= 53) or nEventIdn = 55 or (nEventIdn >= 58 and nEventIdn <= 62))] ???? lỗi khi chuyển từ bảng bk sang ko bk
 	--> nếu lọc những record không hợp lệ ra ko đồng bộ vào database thì dùng cách ktra nEventLogIdn có max hay không không được trong trường hợp record cuối cùng của bảng BK là dữ liệu chấm công không hợp lệ
 	--> sync luôn cả những record chấm công không hợp lệ
 	--> trên giao diện ứng dụng chỉ hiện những record chấm công hợp lệ với đk ((nEventIdn >= 43 and nEventIdn <= 53) or nEventIdn = 55 or (nEventIdn >= 58 and nEventIdn <= 62))
