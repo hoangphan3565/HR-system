@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -28,22 +29,26 @@ public class Shift_Daily implements Serializable {
     @Column(nullable = false, name = "DayOfWeek")
     private Integer DayOfWeek;
 
+
+
     @CreationTimestamp
     @Column(nullable = false, name = "CreateDate")
-    private LocalDateTime createdate;
+    private LocalDateTime createDate;
 
     @Column(nullable = false, name = "CreateBy")
-    private Integer createby;
+    private Integer createBy;
 
+    @UpdateTimestamp
     @Column(name = "ModifyDate")
     private LocalDateTime modifyDate;
 
     @Column(name = "ModifyBy")
-    private Integer modifyby;
+    private Integer modifyDy;
+
+    @Column(name = "IsDeleted")
+    private Boolean isDeleted;
 
 
-    @Column(name = "isDeleted")
-    private Boolean isdeleted;
 
     @ManyToOne
     @JoinColumn(name = "SIF_ID")

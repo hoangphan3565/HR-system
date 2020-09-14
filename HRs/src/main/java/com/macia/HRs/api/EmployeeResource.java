@@ -94,10 +94,6 @@ public class EmployeeResource {
     @ResponseBody
     public List<Employee> getEmployeeByFirstName(@PathVariable(value = "name") String name)
             throws ResourceNotFoundException {
-        //Tìm kiến theo tên nhân viên bằng câu truy vấn like
-        //return employeeService.findEmployeeByFirstName(name);
-
-        //phải truyền vào đúng tên nhân viên
         return employeeRepository.findByFirstName(name);
     }
 
@@ -106,31 +102,6 @@ public class EmployeeResource {
     public List<Employee> findEmployeeByFirstName(@PathVariable(value = "name") String name)
             throws ResourceNotFoundException {
         return employeeService.findEmployeeByFirstName(name);
-    }
-
-    @GetMapping("/gender/female")
-    @ResponseBody
-    public List<Employee> getFemaleEmployees()
-            throws ResourceNotFoundException {
-        return employeeRepository.findByGender(Gender.FEMALE);
-    }
-    @GetMapping("/gender/female/count")
-    @ResponseBody
-    public Integer getFemaleEmployeesTotal()
-            throws ResourceNotFoundException {
-        return employeeRepository.findByGender(Gender.FEMALE).size();
-    }
-    @GetMapping("/gender/male")
-    @ResponseBody
-    public List<Employee> getMaleEmployees()
-            throws ResourceNotFoundException {
-        return employeeRepository.findByGender(Gender.MALE);
-    }
-    @GetMapping("/gender/male/count")
-    @ResponseBody
-    public Integer getMaleEmployeesTotal()
-            throws ResourceNotFoundException {
-        return employeeRepository.findByGender(Gender.MALE).size();
     }
 
     @PostMapping("/create/dept/{deptid}")
