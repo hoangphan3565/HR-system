@@ -5,10 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @SuppressWarnings("JpaDataSourceORMInspection")
@@ -38,6 +41,22 @@ public class Department implements Serializable {
 
     private LocalDate startDate;
 
+    @CreationTimestamp
+    @Column(name = "CreateDate")
+    private LocalDateTime createdate;
+
+    @Column(name = "CreateBy")
+    private Integer createby;
+
+    @UpdateTimestamp
+    @Column(name = "ModifyDate")
+    private LocalDateTime modifyDate;
+
+    @Column(name = "ModifyBy")
+    private Integer modifyby;
+
+    @Column(name = "isDeleted")
+    private Boolean isdeleted;
 
     @JsonIgnore
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE},

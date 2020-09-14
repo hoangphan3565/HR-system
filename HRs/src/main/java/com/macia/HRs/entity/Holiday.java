@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -45,4 +47,21 @@ public class Holiday implements Serializable {
 
     @Column(name = "Coefficient")
     private Float coefficient;
+
+    @CreationTimestamp
+    @Column(name = "CreateDate")
+    private LocalDateTime createDate;
+
+    @Column(name = "CreateBy")
+    private Integer createBy;
+
+    @UpdateTimestamp
+    @Column(name = "ModifyDate")
+    private LocalDateTime modifyDate;
+
+    @Column(name = "ModifyBy")
+    private Integer modifyDy;
+
+    @Column(name = "IsDeleted")
+    private Boolean isDeleted;
 }

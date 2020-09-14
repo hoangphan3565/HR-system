@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -33,25 +34,33 @@ public class Shift implements Serializable {
     @Column(name = "SIF_ID")
     private Integer SIF_ID;
 
-    @Column(unique = true, name = "ShiftName", length = 10)
+    @Column(nullable = false, unique = true, name = "ShiftCode", length = 5)
+    private String shiftCode;
+
+    @Column(nullable = false, unique = true, name = "ShiftName", length = 100)
     private String shiftName;
 
+
+
     @CreationTimestamp
-    @Column(nullable = false, name = "CreateDate")
-    private LocalDateTime createdate;
+    @Column(name = "CreateDate")
+    private LocalDateTime createDate;
 
-    @Column(nullable = false, name = "CreateBy")
-    private Integer createby;
+    @Column(name = "CreateBy")
+    private Integer createBy;
 
+    @UpdateTimestamp
     @Column(name = "ModifyDate")
     private LocalDateTime modifyDate;
 
     @Column(name = "ModifyBy")
-    private Integer modifyby;
+    private Integer modifyDy;
 
-    @Column(name = "isDeleted")
-    private Boolean isdeleted;
+    @Column(name = "IsDeleted")
+    private Boolean isDeleted;
 
+
+    
     @JsonIgnore
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             mappedBy = "employee",

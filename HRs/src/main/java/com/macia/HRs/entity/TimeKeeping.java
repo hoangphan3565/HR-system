@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -15,16 +16,19 @@ import java.time.LocalDateTime;
 @Entity
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = {"EVL_ID"})
+@EqualsAndHashCode(exclude = {"TKP_ID"})
 @ToString(exclude = {"employee"})
 @NamedQueries({
 })
-public class Event_Log implements Serializable {
+public class TimeKeeping implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "EVL_ID")
-    private Integer EVL_ID;
+    @Column(name = "TKP_ID")
+    private Integer TKP_ID;
+
+    @Column(name = "timeCheckCodeOfEmp")
+    private Integer timeCheckCodeOfEmp;
 
     @Column(nullable = false, name = "DateTime")
     private LocalDateTime DateTime;
@@ -35,22 +39,24 @@ public class Event_Log implements Serializable {
     @Column(nullable = false, name = "EventData")
     private Integer eventData;
 
+
     @CreationTimestamp
-    @Column(nullable = false, name = "CreateDate")
-    private LocalDateTime createdate;
+    @Column(name = "CreateDate")
+    private LocalDateTime createDate;
 
-    @Column(nullable = false, name = "CreateBy")
-    private Integer createby;
+    @Column(name = "CreateBy")
+    private Integer createBy;
 
+    @UpdateTimestamp
     @Column(name = "ModifyDate")
     private LocalDateTime modifyDate;
 
     @Column(name = "ModifyBy")
-    private Integer modifyby;
+    private Integer modifyDy;
 
+    @Column(name = "IsDeleted")
+    private Boolean isDeleted;
 
-    @Column(name = "isDeleted")
-    private Boolean isdeleted;
 
     @ManyToOne
     @JoinColumn(name = "EMP_ID")

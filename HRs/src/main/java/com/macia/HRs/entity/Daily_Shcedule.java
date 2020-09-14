@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -31,7 +32,7 @@ public class Daily_Shcedule implements Serializable {
     @Column(name = "DLS_ID")
     private Integer DLS_ID;
 
-    @Column(unique = true, name = "Name", length = 10)
+    @Column(unique = true, name = "Name", length = 100,nullable = false)
     private String Name;
 
     @Column(name = "StartTime")
@@ -47,6 +48,7 @@ public class Daily_Shcedule implements Serializable {
     @Column(nullable = false, name = "CreateBy")
     private Integer createby;
 
+    @UpdateTimestamp
     @Column(name = "ModifyDate")
     private LocalDateTime modifyDate;
 
