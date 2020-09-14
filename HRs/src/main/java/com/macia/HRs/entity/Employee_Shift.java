@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -36,21 +37,23 @@ public class Employee_Shift implements Serializable {
     private LocalDate enddate;
 
     @CreationTimestamp
-    @Column(nullable = false, name = "CreateDate")
+    @Column(name = "CreateDate")
     private LocalDateTime createdate;
 
-    @Column(nullable = false, name = "CreateBy")
+    @Column(name = "CreateBy")
     private Integer createby;
 
+    @UpdateTimestamp
     @Column(name = "ModifyDate")
     private LocalDateTime modifyDate;
 
     @Column(name = "ModifyBy")
     private Integer modifyby;
 
-
     @Column(name = "isDeleted")
     private Boolean isdeleted;
+
+
 
     @ManyToOne
     @JoinColumn(name = "EMP_ID")

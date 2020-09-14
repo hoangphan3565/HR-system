@@ -3,11 +3,10 @@ package com.macia.HRs.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.macia.HRs.utility.Gender;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -36,8 +35,11 @@ public class Employee implements Serializable {
     @Column(name = "EMP_ID")
     private Integer EMP_ID;
 
-    @Column(unique = true, name = "Code", length = 10)
-    private String employeeid;
+    @Column(nullable = false, name = "EmployeeCode", length = 10)
+    private String employeeCode;
+
+    @Column(unique = true, name = "timeCheckCode")
+    private Integer timeCheckCode;
 
     @Column(nullable = false, name = "FirstName", length = 20)
     private String firstName;
@@ -48,21 +50,17 @@ public class Employee implements Serializable {
     @Transient
     private String fullName;
 
-    @Column(nullable = false, name = "StartDate")
+    @Column(name = "StartDate")
     private LocalDate startdate;
 
-    @Column(nullable = false, name = "EndDate")
+    @Column(name = "EndDate")
     private LocalDate enddate;
 
-    @Enumerated(EnumType.ORDINAL)
-    private Gender gender;
-
-
     @CreationTimestamp
-    @Column(nullable = false, name = "CreateDate")
+    @Column(name = "CreateDate")
     private LocalDateTime createdate;
 
-    @Column(nullable = false, name = "CreateBy")
+    @Column(name = "CreateBy")
     private Integer createby;
 
     @Column(name = "ModifyDate")
@@ -71,7 +69,7 @@ public class Employee implements Serializable {
     @Column(name = "ModifyBy")
     private Integer modifyby;
 
-
+    //,columnDefinition = "bit default '0'"
     @Column(name = "isDeleted")
     private Boolean isdeleted;
 

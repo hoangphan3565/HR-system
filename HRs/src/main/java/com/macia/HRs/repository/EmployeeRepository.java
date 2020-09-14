@@ -16,7 +16,6 @@ import java.util.Optional;
 public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
     List<Employee> findByDepartment(Optional<Department> dept);
     List<Employee> findByPosition(Optional<Position> pos);
-    List<Employee> findByGender(Gender gender);
     List<Employee> findByFirstName(String firstname);
 
     @Modifying
