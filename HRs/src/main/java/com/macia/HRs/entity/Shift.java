@@ -1,18 +1,14 @@
 package com.macia.HRs.entity;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.macia.HRs.utility.Gender;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -63,7 +59,7 @@ public class Shift implements Serializable {
     
     @JsonIgnore
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE},
-            mappedBy = "employee",
+            mappedBy = "shift",
             fetch = FetchType.LAZY, orphanRemoval = false)
     private List<Employee_Shift> employee_shifts;
 
