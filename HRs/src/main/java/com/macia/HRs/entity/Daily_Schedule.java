@@ -25,7 +25,7 @@ import java.util.List;
 @EqualsAndHashCode(exclude = {"DLS_ID"})
 @NamedQueries({
 })
-public class Daily_Shcedule implements Serializable {
+public class Daily_Schedule implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,7 +60,7 @@ public class Daily_Shcedule implements Serializable {
 
     @JsonIgnore
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE},
-            mappedBy = "shift",
+            mappedBy = "daily_schedule",
             fetch = FetchType.LAZY, orphanRemoval = false)
     private List<Shift_Daily> shift_dailies;
 }
