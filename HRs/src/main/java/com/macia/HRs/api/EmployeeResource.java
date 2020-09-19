@@ -115,21 +115,21 @@ public class EmployeeResource {
 
     @PostMapping("/create/dept/{deptid}")
     public Employee createEmployeeWithDeptID(@RequestBody Employee employee,@PathVariable(value = "deptid") Integer deptid) {
-        Department department = deptRepo.findById(deptid).orElseThrow();
+        Department department = deptRepo.findById(deptid).orElseThrow(null);
         employee.setDepartment(department);
         return employeeRepository.save(employee);
     }
     @PostMapping("/create/pos/{posid}")
     public Employee createEmployeeWithPostID(@RequestBody Employee employee,@PathVariable(value = "posid") Integer posid) {
-        Position position = posRepo.findById(posid).orElseThrow();
+        Position position = posRepo.findById(posid).orElseThrow(null);
         employee.setPosition(position);
         return employeeRepository.save(employee);
     }
     @PostMapping("/create/dept/{deptid}/pos/{posid}")
     public Employee createEmployeeWithDeptAndPostID(@RequestBody Employee employee,@PathVariable(value = "deptid") Integer deptid,@PathVariable(value = "posid") Integer posid) {
-        Department department = deptRepo.findById(deptid).orElseThrow();
+        Department department = deptRepo.findById(deptid).orElseThrow(null);
         employee.setDepartment(department);
-        Position position = posRepo.findById(posid).orElseThrow();
+        Position position = posRepo.findById(posid).orElseThrow(null);
         employee.setPosition(position);
         return employeeRepository.save(employee);
     }
