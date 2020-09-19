@@ -1,0 +1,13 @@
+#exportdept{
+    margin-top: 5%;
+    margin-right: 5%;
+    left: 40%;
+}
+@media only screen and (max-width: 600px) {
+    #exportdept{
+        left: -45%;
+    }
+}
+#addept{
+    left: 40%;
+}
