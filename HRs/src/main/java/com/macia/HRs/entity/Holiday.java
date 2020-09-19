@@ -23,7 +23,9 @@ import java.util.List;
         @NamedQuery(name = "holiday_findAll",
                 query = "SELECT d FROM Holiday d"),
         @NamedQuery(name = "holiday_findByName",
-                query = "SELECT d FROM Holiday d WHERE d.dayName = :dayName")
+                query = "SELECT d FROM Holiday d WHERE d.dayName = :dayName"),
+        @NamedQuery(name = "holiday_findAllHolidayByName",
+        query = "from Holiday d where LOWER(d.holidayName) like '%' || :dayName ||'%'")
 })
 
 public class Holiday implements Serializable {

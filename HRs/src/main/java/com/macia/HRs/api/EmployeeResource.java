@@ -51,7 +51,7 @@ public class EmployeeResource {
     }
     @DeleteMapping("/{id}")
     @ResponseBody
-    public Map<String, Boolean> deleteProject(@PathVariable(value = "id") Integer empID) throws Exception {
+    public Map<String, Boolean> deleteEmployee(@PathVariable(value = "id") Integer empID) throws Exception {
         Employee employee =
                 employeeRepository
                         .findById(empID)
@@ -97,11 +97,20 @@ public class EmployeeResource {
         return employeeRepository.findByFirstName(name);
     }
 
-    @GetMapping("/find/fname/{name}")
+    /*==================== Get EMP details Via NamedQuery by firstname=====================*/
+//    @GetMapping("/find/fname/{fname}")
+//    @ResponseBody
+//    public List<Employee> findEmployeeByFirstName(@PathVariable(value = "fname") String name)
+//            throws ResourceNotFoundException {
+//        return employeeService.findEmployeeByFirstName(name);
+//    }
+
+    /*==================== Get EMP details Via PROC by firstname=====================*/
+    @GetMapping("/find/fname/{fname}")
     @ResponseBody
-    public List<Employee> findEmployeeByFirstName(@PathVariable(value = "name") String name)
+    public List<Employee> findEmployeeByFirstName(@PathVariable(value = "fname") String fname)
             throws ResourceNotFoundException {
-        return employeeService.findEmployeeByFirstName(name);
+        return employeeService.findAllEmpViaProcByFirstName(fname);
     }
 
     @PostMapping("/create/dept/{deptid}")
@@ -124,4 +133,6 @@ public class EmployeeResource {
         employee.setPosition(position);
         return employeeRepository.save(employee);
     }
+
+
 }

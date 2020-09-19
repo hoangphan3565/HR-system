@@ -14,6 +14,22 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+
+@NamedStoredProcedureQueries({
+        @NamedStoredProcedureQuery(
+                name = "named_getEmployeeLikeName",
+                procedureName = "get_Employee_Like_Name",
+                resultClasses = { Employee.class },
+                parameters = {
+                        @StoredProcedureParameter(
+                                mode = ParameterMode.IN,
+                                name = "firstname",
+                                type = String.class)
+                }
+        )
+})
+
+
 @SuppressWarnings("JpaDataSourceORMInspection")
 @Entity
 @Data
@@ -69,7 +85,7 @@ public class Employee implements Serializable {
     @Column(name = "ModifyBy")
     private Integer modifyby;
 
-    //,columnDefinition = "bit default '0'"
+    //,columnDefinition = "Boolean default '0'"
     @Column(name = "isDeleted")
     private Boolean isdeleted;
 

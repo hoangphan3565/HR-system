@@ -12,6 +12,20 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+@NamedStoredProcedureQueries({
+        @NamedStoredProcedureQuery(
+                name = "named_syncDataOnDate",
+                procedureName = "sync_Data_On_Date",
+                parameters = {
+                        @StoredProcedureParameter(
+                                mode = ParameterMode.IN,
+                                name = "date",
+                                type = String.class)
+                }
+        )
+})
+
+
 @SuppressWarnings("JpaDataSourceORMInspection")
 @Entity
 @Data
@@ -57,6 +71,8 @@ public class TimeKeeping implements Serializable {
     @Column(name = "IsDeleted")
     private Boolean isDeleted;
 
+    @Column()
+    private Integer nEventLogIdn;
 
     @ManyToOne
     @JoinColumn(name = "EMP_ID")
