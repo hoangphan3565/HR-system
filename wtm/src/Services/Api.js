@@ -2,7 +2,8 @@ import axios from 'axios';
 const url = {
     baseURL: "http://localhost:8080/api",
     positions: "/positions",
-    employees:"/employees"
+    employees:"/employees",
+    department:"/departments"
 };
 const instance = axios.create({
     baseURL: url.baseURL,

@@ -1,41 +1,78 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Tooltip, Button, Select, Input, Popconfirm, Modal, Form,notification, DatePicker, Pagination,Empty } from "antd";
-import { VerticalAlignBottomOutlined, UserAddOutlined } from "@ant-design/icons";
+import { Tooltip, Button, Select, Input, Popconfirm, Modal, Form, notification, DatePicker, Pagination, Empty, BackTop } from "antd";
+import { VerticalAlignBottomOutlined, UserAddOutlined, VerticalAlignTopOutlined } from "@ant-design/icons";
 import Item from './Item';
 import EmployeeServices from '../../Services/EmployeeServices';
+import DepartmentService from '../../Services/DepartmentService';
+import PositionService from '../../Services/PositionServices';
+import axios from 'axios';
+import moment from 'moment';
 const Table = (props) => {
-    const [link, setLink] = useState("");
+
     const search = useRef();
+    const code = useRef();
+    const firstName = useRef();
+    const lastName = useRef();
+    const position = useRef();
+    const department = useRef();
+    const startDate = useRef();
+    const timeCheckCode = useRef();
+
+    const [link, setLink] = useState("");
+
     const [employees, setEmployees] = useState([]);
     const [temp, setTemp] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [perPage, setPerPage] = useState(10);
+    const [dept, setDept] = useState([]);
+    const [pos, setPos] = useState([]);
     const indexOfLast = currentPage * perPage;
     const indexOfFirst = indexOfLast - perPage;
-
-    console.log(temp);
+    const date1 = new Date();
+    const year = date1.toISOString();
+    const a = year.slice(0, 10);
+    const [start, setStartDate] = useState(`${a}`);
+    const transmiss = (a) => {
+        setLink(a);
+    }
+    useEffect(() => {
+        DepartmentService.list().then(res => {
+            setDept(res.data);
+        })
+        PositionService.list().then(res => {
+            setPos(res.data);
+        })
+    }, [])
+    const deptOptions = [];
+    for (let i = 0; i < dept.length; i++) {
+        deptOptions.push(dept[i].dep_ID)
+    }
+    const posOptions = [];
+    for (let i = 0; i < pos.length; i++) {
+        posOptions.push(pos[i].pos_ID)
+    }
     useEffect(() => {
         const test1 = [];
         if (link !== "") {
-            var fla=0;
+            var fla = 0;
             for (var i = 0; i < temp.length; i++) {
                 //console.log(temp[i].emp_ID);
                 if (Number(link) === temp[i].emp_ID) {
                     EmployeeServices.list(link).then(res => { test1.push(res.data); setEmployees(test1); });
-                    fla=1;
+                    fla = 1;
                     break;
                 }
             }
-            if(fla==0){
+            if (fla == 0) {
+
                 setEmployees([]);
-            }       
+            }
         }
         else {
             EmployeeServices.list(link).then(res => { setEmployees(res.data); });
         }
 
-    }, [link])
-    console.log(employees);
+    },[]);
     const { Option } = Select;
     const { Search } = Input;
     const onShowSizeChange = (current, pageSize) => {
@@ -46,9 +83,23 @@ const Table = (props) => {
         setCurrentPage(pageNumber);
     }
     const currentEmployees = employees.slice(indexOfFirst, indexOfLast);
+
+
+    const optionsDept = deptOptions.map((e) => {
+        return (
+            <Option value={e}>Department 0{e}</Option>
+        );
+    })
+
+    const optionsPos = posOptions.map((e) => {
+        return (
+            <Option value={e}>{e === 1 ? "Nhân viên văn phòng" : "Công nhân"}</Option>
+        );
+    })
+
     const employee = currentEmployees.map((e, index) => {
-        return(
-            <Item e={e}/>
+        return (
+            <Item e={e} test={transmiss} />
         );
     });
     const layout = {
@@ -63,14 +114,27 @@ const Table = (props) => {
         setAddModal(false);
     }
     const onFinish = () => {
-        setAddModal(false);
-        const args = {
-            message: 'Created Successfully',
-            description:
-                'This employee was updated in Your System !',
-            duration: 1,
-        };
-        notification.open(args);
+       const employee={
+           "employeeCode":code.current.props.value,
+           "timeCheckCode":parseInt(timeCheckCode.current.props.value),
+           "firstName":firstName.current.props.value,
+           "lastName":lastName.current.props.value,
+           "startdate":startDate.current.props.value._i
+       }
+       const args = {
+        message: 'Created Successfully',
+        description:
+            'An new employee was added in Your System !',
+        duration: 1,
+        icon:<UserAddOutlined />
+    };
+       EmployeeServices.add(department.current.props.value,position.current.props.value,employee).then(res=>{
+            setLink("1");
+            setLink("");
+            setAddModal(false);
+            
+       },notification.open(args))
+
     }
     const test = (a) => {
         setLink(a);
@@ -80,10 +144,13 @@ const Table = (props) => {
             setTemp(res.data);
         })
     }, []);
+    const handleDatePickerChange = (date, dateString) => {
+        setStartDate(dateString);
+    }
     return (
         <div>
             <div className="container">
-                <div className="card" style={{ width: 1190 }}>
+                <div className="card">
                     <div className="card-header">
                         <div className="row align-items-center" >
                             <div className="col-md-4">
@@ -125,10 +192,11 @@ const Table = (props) => {
                                     footer={[
                                         <Button key="back" onClick={handleCancel}>
                                             Cancel
-                                      </Button>,
-                                        <Button key="submit" type="primary" onClick={onFinish}>
+                             </Button>,
+                                        <Button key="submit" type="primary" htmlType="submit" onClick={onFinish}  style={{ float: "right" }}>
                                             Create
-                                      </Button>
+                                 </Button>
+
                                     ]}
                                 >
                                     <Form {...layout} onFinish={onFinish}>
@@ -137,48 +205,46 @@ const Table = (props) => {
                                             name="code"
                                             rules={[{ required: true }]}
                                             hasFeedback>
-                                            <Input size="middle" />
+                                            <Input size="middle" ref={code} />
+                                        </Form.Item>
+                                        <Form.Item
+                                            label="TimeCheck Code"
+                                            name="timeCheckCode"
+                                            rules={[{ required: true }]}
+                                            hasFeedback>
+                                            <Input size="middle" ref={timeCheckCode} />
                                         </Form.Item>
                                         <Form.Item
                                             label="First Name"
                                             name="firstName"
                                             rules={[{ required: true }]}
                                             hasFeedback>
-                                            <Input size="middle" />
+                                            <Input size="middle" ref={firstName} />
                                         </Form.Item>
                                         <Form.Item
                                             label="Last Name"
                                             name="lastName"
                                             rules={[{ required: true }]}
                                             hasFeedback>
-                                            <Input size="middle" />
+                                            <Input size="middle" ref={lastName} />
                                         </Form.Item>
-                                        <Form.Item label="Gender" name="gender">
-                                            <Select defaultValue={"MALE"}>
-                                                <Option value="MALE">Male</Option>
-                                                <Option value="FEMALE">Female</Option>
+                                        <Form.Item label="Department" name="department">
+                                            <Select ref={department}>
+                                                {optionsDept}
                                             </Select>
                                         </Form.Item>
                                         <Form.Item label="Position" name="position">
-                                            <Select >
-                                                <Option value="MALE">Male</Option>
-                                                <Option value="FEMALE">Female</Option>
+                                            <Select ref={position}>
+                                                {optionsPos}
                                             </Select>
                                         </Form.Item>
-                                        <Form.Item label="Department" name="department">
-                                            <Select >
-                                                <Option value="MALE">Male</Option>
-                                                <Option value="FEMALE">Female</Option>
-                                            </Select>
-                                        </Form.Item>
+
                                         <Form.Item label="Start Date">
                                             <DatePicker
+                                                value={moment(`${start}`, "YYYY-MM-DD")}
                                                 style={{ width: 354 }}
-                                            />
-                                        </Form.Item>
-                                        <Form.Item label="End Date">
-                                            <DatePicker
-                                                style={{ width: 354 }}
+                                                onChange={(date, dateString) => handleDatePickerChange(date, dateString)}
+                                                ref={startDate}
                                             />
                                         </Form.Item>
                                     </Form>
@@ -203,11 +269,12 @@ const Table = (props) => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {employee.length!==0?employee:<Empty />}
+                                    {employee.length !== 0 ? employee : <Empty />}
                                 </tbody>
                             </table>
                             <Pagination
                                 showSizeChanger
+                                current={currentPage}
                                 onShowSizeChange={onShowSizeChange}
                                 onChange={onChange}
                                 total={employees.length}
@@ -216,6 +283,9 @@ const Table = (props) => {
                         </div>
                     </div>
                 </div>
+                <BackTop>
+                    <Button shape="circle" style={{ backgroundColor: "rgba(0,0,0,0.85)", color: "white", opacity: 0.4 }} icon={<VerticalAlignTopOutlined />}></Button>
+                </BackTop>
             </div>
         </div>
     );
