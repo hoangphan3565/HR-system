@@ -264,7 +264,6 @@ const Table = (props) => {
                                         <th>Position</th>
                                         <th>Department</th>
                                         <th>Start Date </th>
-                                        <th>End Date</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
