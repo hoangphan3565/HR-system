@@ -3,13 +3,11 @@ package com.macia.HRs.entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @SuppressWarnings("JpaDataSourceORMInspection")
@@ -56,7 +54,7 @@ public class Shift_Daily implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "DLS_ID")
-    private Daily_Shcedule daily_shcedule;
+    private Daily_Schedule daily_schedule;
 
 
 }

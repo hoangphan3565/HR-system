@@ -1,0 +1,41 @@
+.container{
+    margin-top:5%
+}
+@media only screen and (max-width: 600px) {
+    #export{
+        float:left;
+    }
+}
+thead{
+    background-color: aliceblue;
+}
+.ant-btn-circle{
+    margin: 2%;
+}
+.col-xl-2{
+    padding:0;
+}
+.col-xl-10{
+    padding:0;
+}
+.ant-menu-light .ant-menu-submenu-title,.ant-menu-dark .ant-menu-submenu-title{
+    font-size: large;
+}
+#home{
+    margin:0;
+    font-size: large;
+}
+.ant-menu-dark .ant-menu-inline.ant-menu-sub {
+    background: black;
+}
+.ant-empty {
+    margin: 0 8px;
+    font-size: 14px;
+    line-height: 1.5715;
+    text-align: center;
+    /* position: absolute; */
+    /* text-align: center; */
+    margin-left: 30%;
+    position: fixed;
+}
+
