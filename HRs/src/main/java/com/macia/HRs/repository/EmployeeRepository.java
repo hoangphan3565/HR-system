@@ -3,12 +3,9 @@ package com.macia.HRs.repository;
 import com.macia.HRs.entity.Department;
 import com.macia.HRs.entity.Employee;
 import com.macia.HRs.entity.Position;
-import com.macia.HRs.utility.Gender;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.jpa.repository.query.Procedure;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -23,4 +20,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
     @Modifying
     @Query("select e from Employee e LEFT JOIN FETCH e.department")
     List<Employee> findAllWithouyNplusOne();
-    }
+
+    @Modifying
+    @Query("select e from Employee e LEFT JOIN FETCH e.department WHERE e.isdeleted = false")
+    List<Employee> findAllWithouyNplusOneAvailable();
+}

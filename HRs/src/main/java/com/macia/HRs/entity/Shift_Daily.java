@@ -16,6 +16,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @EqualsAndHashCode(exclude = {"SDL_ID"})
 @NamedQueries({
+        @NamedQuery(name = "shiftdaily_findAll",
+                query = "SELECT e FROM Shift_Daily e"),
+        @NamedQuery(name = "shiftdaily_findAllAvailable",
+                query = "SELECT e FROM Shift_Daily e where e.isDeleted=false "),
 })
 public class Shift_Daily implements Serializable {
 
@@ -41,7 +45,7 @@ public class Shift_Daily implements Serializable {
     private LocalDateTime modifyDate;
 
     @Column(name = "ModifyBy")
-    private Integer modifyDy;
+    private Integer modifyBy;
 
     @Column(name = "IsDeleted")
     private Boolean isDeleted;

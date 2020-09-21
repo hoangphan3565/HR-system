@@ -2,11 +2,11 @@ package com.macia.HRs.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.macia.HRs.utility.Gender;
-import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -83,7 +83,7 @@ public class Employee implements Serializable {
     private LocalDateTime modifyDate;
 
     @Column(name = "ModifyBy")
-    private Integer modifyby;
+    private Integer modifyBy;
 
     //,columnDefinition = "Boolean default '0'"
     @Column(name = "isDeleted")
