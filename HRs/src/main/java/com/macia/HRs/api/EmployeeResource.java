@@ -69,16 +69,12 @@ public class EmployeeResource {
         return response;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{code}")
     @CrossOrigin("*")
     @ResponseBody
-    public ResponseEntity<Employee> getEmployeeById(@PathVariable(value = "id") Integer empId)
+    public ResponseEntity<Employee> getEmployeeByCode(@PathVariable(value = "code") String empcode)
             throws ResourceNotFoundException {
-        Employee user =
-                employeeRepository
-                        .findById(empId)
-                        .orElseThrow(() -> new ResourceNotFoundException("Employee not found on :: " + empId));
-        return ResponseEntity.ok().body(user);
+        return ResponseEntity.ok().body(employeeRepository.findByEmployeeCode(empcode));
     }
 
     @GetMapping("/dept/{deptid}")
@@ -108,7 +104,6 @@ public class EmployeeResource {
             throws ResourceNotFoundException {
         return employeeRepository.findByFirstName(name);
     }
-
     /*==================== Get EMP details Via NamedQuery by firstname=====================*/
 //    @GetMapping("/find/fname/{fname}")
 //    @ResponseBody
@@ -119,7 +114,6 @@ public class EmployeeResource {
 
     /*==================== Get EMP details Via PROC by firstname=====================*/
     @GetMapping("/find/fname/{fname}")
-    @CrossOrigin("*")
     @ResponseBody
     public List<Employee> findEmployeeByFirstName(@PathVariable(value = "fname") String fname)
             throws ResourceNotFoundException {
@@ -127,21 +121,18 @@ public class EmployeeResource {
     }
 
     @PostMapping("/create/dept/{deptid}")
-    @CrossOrigin("*")
     public Employee createEmployeeWithDeptID(@RequestBody Employee employee,@PathVariable(value = "deptid") Integer deptid) {
         Department department = deptRepo.findById(deptid).orElseThrow();
         employee.setDepartment(department);
         return employeeRepository.save(employee);
     }
     @PostMapping("/create/pos/{posid}")
-    @CrossOrigin("*")
     public Employee createEmployeeWithPostID(@RequestBody Employee employee,@PathVariable(value = "posid") Integer posid) {
         Position position = posRepo.findById(posid).orElseThrow();
         employee.setPosition(position);
         return employeeRepository.save(employee);
     }
     @PostMapping("/create/dept/{deptid}/pos/{posid}")
-    @CrossOrigin("*")
     public Employee createEmployeeWithDeptAndPostID(@RequestBody Employee employee,@PathVariable(value = "deptid") Integer deptid,@PathVariable(value = "posid") Integer posid) {
         Department department = deptRepo.findById(deptid).orElseThrow();
         employee.setDepartment(department);

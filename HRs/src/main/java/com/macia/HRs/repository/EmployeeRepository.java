@@ -16,6 +16,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
     List<Employee> findByDepartment(Optional<Department> dept);
     List<Employee> findByPosition(Optional<Position> pos);
     List<Employee> findByFirstName(String firstname);
+    Employee findByEmployeeCode(String empcode);
 
     @Modifying
     @Query("select e from Employee e LEFT JOIN FETCH e.department")
