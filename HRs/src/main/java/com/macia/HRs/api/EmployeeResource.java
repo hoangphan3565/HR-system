@@ -46,6 +46,18 @@ public class EmployeeResource {
         return employeeRepository.findAllWithouyNplusOneAvailable();
     }
 
+    @GetMapping("/{id}")
+    @ResponseBody
+    @CrossOrigin("*")
+    public ResponseEntity<Employee> getEmployeeById(@PathVariable(value = "id") Integer EmployeeId)
+            throws ResourceNotFoundException {
+        Employee Employee =
+                employeeRepository
+                        .findById(EmployeeId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Employee not found on :: " + EmployeeId));
+        return ResponseEntity.ok().body(Employee);
+    }
+    
     @GetMapping("/count")
     @CrossOrigin("*")
     public Long count() {
@@ -69,13 +81,7 @@ public class EmployeeResource {
         return response;
     }
 
-    @GetMapping("/{code}")
-    @CrossOrigin("*")
-    @ResponseBody
-    public ResponseEntity<Employee> getEmployeeByCode(@PathVariable(value = "code") String empcode)
-            throws ResourceNotFoundException {
-        return ResponseEntity.ok().body(employeeRepository.findByEmployeeCode(empcode));
-    }
+
 
     @GetMapping("/dept/{deptid}")
     @CrossOrigin("*")
@@ -112,6 +118,14 @@ public class EmployeeResource {
 //        return employeeService.findEmployeeByFirstName(name);
 //    }
 
+    @GetMapping("/find/code/{code}")
+    @CrossOrigin("*")
+    @ResponseBody
+    public ResponseEntity<Employee> getEmployeeByCode(@PathVariable(value = "code") String empcode)
+            throws ResourceNotFoundException {
+        return ResponseEntity.ok().body(employeeRepository.findByEmployeeCode(empcode));
+    }
+    
     /*==================== Get EMP details Via PROC by firstname=====================*/
     @GetMapping("/find/fname/{fname}")
     @CrossOrigin("*")
