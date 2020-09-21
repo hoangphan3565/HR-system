@@ -64,7 +64,6 @@ public class EmployeeResource {
         return employeeRepository.count();
     }
 
-
     @DeleteMapping("/{id}/uid/{uid}")
     @CrossOrigin("*")
     @ResponseBody
@@ -135,13 +134,41 @@ public class EmployeeResource {
         return employeeService.findAllEmpViaProcByFirstName(fname);
     }
 
-    @PostMapping("/create/dept/{deptid}/pos/{posid}")
-    @CrossOrigin("*")
-    public Employee createEmployeeWithDeptAndPostID(@RequestBody Employee employee,@PathVariable(value = "deptid") Integer deptid,@PathVariable(value = "posid") Integer posid) {
-        Department department = deptRepo.findById(deptid).orElseThrow();
+    @PostMapping("/create/dept/{deptid}")
+    public Employee createEmployeeWithDeptID(@RequestBody Employee employee,@PathVariable(value = "deptid") Integer deptid) {
+        Department department = deptRepo.findById(deptid).orElseThrow(null);
         employee.setDepartment(department);
-        Position position = posRepo.findById(posid).orElseThrow();
+        return employeeRepository.save(employee);
+    }
+    @PostMapping("/create/pos/{posid}")
+    public Employee createEmployeeWithPostID(@RequestBody Employee employee,@PathVariable(value = "posid") Integer posid) {
+        Position position = posRepo.findById(posid).orElseThrow(null);
         employee.setPosition(position);
         return employeeRepository.save(employee);
     }
+  
+    @CrossOrigin(origins = "*")
+    @PostMapping("/create/dept/{deptid}/pos/{posid}")
+    @CrossOrigin("*")
+    public Employee createEmployeeWithDeptAndPostID(@RequestBody Employee employee,@PathVariable(value = "deptid") Integer deptid,@PathVariable(value = "posid") Integer posid) {
+        Department department = deptRepo.findById(deptid).orElseThrow(null);
+        employee.setDepartment(department);
+        Position position = posRepo.findById(posid).orElseThrow(null);
+        employee.setPosition(position);
+        return employeeRepository.save(employee);
+    }
+
+    @CrossOrigin(origins = "*")
+    @PutMapping("/update/{eid}/dept/{deptid}/pos/{posid}")
+	public Employee updateEmployeeById(@RequestBody Employee employee,@PathVariable int eid,@PathVariable int deptid,@PathVariable int posid) {
+    	Employee e=employeeRepository.findById(eid).orElseThrow(null);
+    	Department d=deptRepo.findById(deptid).orElseThrow(null);
+		Position p=posRepo.findById(posid).orElseThrow(null);
+		e.setFirstName(employee.getFirstName());
+		e.setLastName(employee.getLastName());
+		e.setStartdate(employee.getStartdate());
+		e.setDepartment(d);
+		e.setPosition(p);
+		return employeeRepository.save(e);
+	}
 }

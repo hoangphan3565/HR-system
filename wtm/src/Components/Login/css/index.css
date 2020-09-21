@@ -1,0 +1,32 @@
+.login {
+    margin-top: 15%;
+}
+
+@media only screen and (max-width: 600px) {
+    .login {
+        margin-top: 40%;
+    }
+    #btnlogin{
+        margin-left: -16%;
+    }
+   
+   
+}
+
+.header{
+    background-color: aliceblue;
+    border: 1px solid #f0f0f0;
+}
+.footer{
+    background-color: aliceblue;
+    border: 1px solid #f0f0f0;
+}
+.header h5{
+    text-align:center;
+}
+#btnlogin{
+    left: 50%;
+}
+.brand{
+    margin:2%;
+}
