@@ -19,7 +19,7 @@ public class DepartmentResource {
     private DepartmentRepository departmentRepository;
 
 
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin(origins="*")
     @GetMapping()
     public List<Department> getAllDepartment(){
         return departmentRepository.findAll();
@@ -52,7 +52,7 @@ public class DepartmentResource {
         return ResponseEntity.ok().body(department);
     }
 
-
+    @CrossOrigin(origins = "*")
     @PostMapping("")
     public Department createDepartment(@RequestBody Department department) {
         return departmentRepository.save(department);
@@ -71,4 +71,5 @@ public class DepartmentResource {
         final Department updatedDepartment = departmentRepository.save(department);
         return ResponseEntity.ok(updatedDepartment);
     }
+
 }

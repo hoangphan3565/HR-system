@@ -103,6 +103,7 @@ public class EmployeeResource {
 //    }
 
     /*==================== Get EMP details Via PROC by firstname=====================*/
+    @CrossOrigin(origins = "*")
     @GetMapping("/find/fname/{fname}")
     @ResponseBody
     public List<Employee> findEmployeeByFirstName(@PathVariable(value = "fname") String fname)
