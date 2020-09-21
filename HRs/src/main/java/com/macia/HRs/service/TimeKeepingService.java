@@ -1,7 +1,5 @@
 package com.macia.HRs.service;
 
-import com.macia.HRs.entity.Employee;
-import com.macia.HRs.entity.TimeKeeping;
 import com.macia.HRs.repository.EmployeeRepository;
 import com.macia.HRs.repository.TimeKeepingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.StoredProcedureQuery;
 import java.util.ArrayList;
 import java.util.List;

@@ -1,18 +1,14 @@
 package com.macia.HRs.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @SuppressWarnings("JpaDataSourceORMInspection")
 @Entity
@@ -23,6 +19,8 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(name = "useractivity_findAll",
                 query = "SELECT ura FROM User_Activity ura"),
+        @NamedQuery(name = "useractivity_findAllAvailable",
+                query = "SELECT ura FROM User_Activity ura where ura.isdeleted=false"),
 })
 
 public class User_Activity implements Serializable {
