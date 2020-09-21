@@ -13,10 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.List;
@@ -49,9 +45,10 @@ public class EmployeeResource {
 
         return employeeRepository.count();
     }
+    @CrossOrigin(origins = "*")
     @DeleteMapping("/{id}")
     @ResponseBody
-    public Map<String, Boolean> deleteProject(@PathVariable(value = "id") Integer empID) throws Exception {
+    public Map<String, Boolean> deleteEmployee(@PathVariable(value = "id") Integer empID) throws Exception {
         Employee employee =
                 employeeRepository
                         .findById(empID)
@@ -97,31 +94,57 @@ public class EmployeeResource {
         return employeeRepository.findByFirstName(name);
     }
 
-    @GetMapping("/find/fname/{name}")
+    /*==================== Get EMP details Via NamedQuery by firstname=====================*/
+//    @GetMapping("/find/fname/{fname}")
+//    @ResponseBody
+//    public List<Employee> findEmployeeByFirstName(@PathVariable(value = "fname") String name)
+//            throws ResourceNotFoundException {
+//        return employeeService.findEmployeeByFirstName(name);
+//    }
+
+    /*==================== Get EMP details Via PROC by firstname=====================*/
+    @GetMapping("/find/fname/{fname}")
     @ResponseBody
-    public List<Employee> findEmployeeByFirstName(@PathVariable(value = "name") String name)
+    public List<Employee> findEmployeeByFirstName(@PathVariable(value = "fname") String fname)
             throws ResourceNotFoundException {
-        return employeeService.findEmployeeByFirstName(name);
+        return employeeService.findAllEmpViaProcByFirstName(fname);
     }
 
     @PostMapping("/create/dept/{deptid}")
     public Employee createEmployeeWithDeptID(@RequestBody Employee employee,@PathVariable(value = "deptid") Integer deptid) {
-        Department department = deptRepo.findById(deptid).orElseThrow();
+        Department department = deptRepo.findById(deptid).orElseThrow(null);
         employee.setDepartment(department);
         return employeeRepository.save(employee);
     }
     @PostMapping("/create/pos/{posid}")
     public Employee createEmployeeWithPostID(@RequestBody Employee employee,@PathVariable(value = "posid") Integer posid) {
-        Position position = posRepo.findById(posid).orElseThrow();
+        Position position = posRepo.findById(posid).orElseThrow(null);
         employee.setPosition(position);
         return employeeRepository.save(employee);
     }
+    @CrossOrigin(origins = "*")
     @PostMapping("/create/dept/{deptid}/pos/{posid}")
     public Employee createEmployeeWithDeptAndPostID(@RequestBody Employee employee,@PathVariable(value = "deptid") Integer deptid,@PathVariable(value = "posid") Integer posid) {
-        Department department = deptRepo.findById(deptid).orElseThrow();
+        Department department = deptRepo.findById(deptid).orElseThrow(null);
         employee.setDepartment(department);
-        Position position = posRepo.findById(posid).orElseThrow();
+        Position position = posRepo.findById(posid).orElseThrow(null);
         employee.setPosition(position);
         return employeeRepository.save(employee);
     }
+    
+    @CrossOrigin(origins = "*")
+    @PutMapping("/update/{eid}/dept/{deptid}/pos/{posid}")
+	public Employee updateEmployeeById(@RequestBody Employee employee,@PathVariable int eid,@PathVariable int deptid,@PathVariable int posid) {
+    	Employee e=employeeRepository.findById(eid).orElseThrow(null);
+    	Department d=deptRepo.findById(deptid).orElseThrow(null);
+		Position p=posRepo.findById(posid).orElseThrow(null);
+		e.setFirstName(employee.getFirstName());
+		e.setLastName(employee.getLastName());
+		e.setStartdate(employee.getStartdate());
+		e.setDepartment(d);
+		e.setPosition(p);
+		return employeeRepository.save(e);
+	}
+
+
 }
