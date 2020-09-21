@@ -9,7 +9,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @NamedStoredProcedureQueries({
@@ -66,7 +65,7 @@ public class TimeKeeping implements Serializable {
     private LocalDateTime modifyDate;
 
     @Column(name = "ModifyBy")
-    private Integer modifyDy;
+    private Integer modifyBy;
 
     @Column(name = "IsDeleted")
     private Boolean isDeleted;

@@ -20,8 +20,8 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(name = "shift_findAll",
                 query = "SELECT e FROM Shift e"),
-        @NamedQuery(name = "shift_findAllshiftByFirstName",
-                query = "from Shift e where LOWER(e.shiftName) like '%' || :firstname ||'%'"),
+        @NamedQuery(name = "shift_findAllAvailable",
+                query = "SELECT e FROM Shift e where e.isDeleted=false "),
 })
 public class Shift implements Serializable {
 
@@ -50,7 +50,7 @@ public class Shift implements Serializable {
     private LocalDateTime modifyDate;
 
     @Column(name = "ModifyBy")
-    private Integer modifyDy;
+    private Integer modifyBy;
 
     @Column(name = "IsDeleted")
     private Boolean isDeleted;

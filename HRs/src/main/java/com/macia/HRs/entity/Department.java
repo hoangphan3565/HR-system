@@ -21,8 +21,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @NamedQueries({
-        @NamedQuery(name = "department_findAll",
-                query = "SELECT d FROM Department d"),
+        @NamedQuery(name = "department_findAllAvailable",
+                query = "SELECT d FROM Department d where d.isdeleted=false"),
         @NamedQuery(name = "department_findByName",
                 query = "SELECT d FROM Department d WHERE d.departmentName = :deptname"),
         @NamedQuery(name = "department_findAllDepartmentByName",
@@ -53,7 +53,7 @@ public class Department implements Serializable {
     private LocalDateTime modifyDate;
 
     @Column(name = "ModifyBy")
-    private Integer modifyby;
+    private Integer modifyBy;
 
     @Column(name = "isDeleted")
     private Boolean isdeleted;
