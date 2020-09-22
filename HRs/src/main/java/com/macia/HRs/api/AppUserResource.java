@@ -20,16 +20,20 @@ public class AppUserResource {
     private AppUserRepository AUserRepo;
 
     @GetMapping()
+    @CrossOrigin("*")
+    @ResponseBody
     public List<AppUser> getAllAppUser(){
         return AUserRepo.findAll();
     }
 
     @GetMapping("/count")
+    @CrossOrigin("*")
     public Long count() {
-
         return AUserRepo.count();
     }
+
     @DeleteMapping("/{id}")
+    @CrossOrigin("*")
     public Map<String, Boolean> deleteAppUser(@PathVariable(value = "id") Integer AppUserId) throws Exception {
         AppUser AppUser =
                 AUserRepo
@@ -42,6 +46,8 @@ public class AppUserResource {
     }
 
     @GetMapping("/{id}")
+    @CrossOrigin("*")
+    @ResponseBody
     public ResponseEntity<AppUser> getAppUserById(@PathVariable(value = "id") Integer AppUserId)
             throws ResourceNotFoundException {
         AppUser AppUser =
@@ -52,12 +58,16 @@ public class AppUserResource {
     }
 
 
-    @PostMapping("")
+    @PostMapping()
+    @CrossOrigin("*")
+    @ResponseBody
     public AppUser createAppUser(@RequestBody AppUser AppUser) {
         return AUserRepo.save(AppUser);
     }
 
     @PutMapping("/{id}")
+    @CrossOrigin("*")
+    @ResponseBody
     public ResponseEntity<AppUser> updateAppUser(
             @PathVariable(value = "id") Integer AppUserId, @RequestBody AppUser AppUserDetails)
             throws ResourceNotFoundException {

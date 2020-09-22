@@ -5,7 +5,6 @@ import Item from './Item';
 import EmployeeServices from '../../Services/EmployeeServices';
 import DepartmentService from '../../Services/DepartmentService';
 import PositionService from '../../Services/PositionServices';
-import axios from 'axios';
 import moment from 'moment';
 const Table = (props) => {
 
@@ -18,7 +17,9 @@ const Table = (props) => {
     const startDate = useRef();
     const timeCheckCode = useRef();
 
-    const [link, setLink] = useState("");
+    const [searching, setSearching] = useState("");
+    const [posing, setPosing] = useState("");
+    const [depting, setDepting] = useState("");
 
     const [employees, setEmployees] = useState([]);
     const [temp, setTemp] = useState([]);
@@ -32,9 +33,13 @@ const Table = (props) => {
     const year = date1.toISOString();
     const a = year.slice(0, 10);
     const [start, setStartDate] = useState(`${a}`);
+    const [getDept, setGetDept] = useState();
+    const [getPos, setGetPos] = useState();
+    const [link, setLink] = useState("");
     const transmiss = (a) => {
         setLink(a);
     }
+    //--------------Lấy dữ liệu dept với pos
     useEffect(() => {
         DepartmentService.list().then(res => {
             setDept(res.data);
@@ -42,7 +47,10 @@ const Table = (props) => {
         PositionService.list().then(res => {
             setPos(res.data);
         })
-    }, [])
+        EmployeeServices.list().then(res=>{
+            setTemp(res.data)
+        })
+    },[])
     const deptOptions = [];
     for (let i = 0; i < dept.length; i++) {
         deptOptions.push(dept[i].dep_ID)
@@ -51,28 +59,90 @@ const Table = (props) => {
     for (let i = 0; i < pos.length; i++) {
         posOptions.push(pos[i].pos_ID)
     }
+    //-------------------------------------
+
+    console.log(searching, depting);
     useEffect(() => {
-        const test1 = [];
-        if (link !== "") {
-            var fla = 0;
+        if (depting === "" && posing == "" && searching == "") {
+            EmployeeServices.list(searching).then(res => { setEmployees(res.data); });
+        }
+        if (depting && posing && searching === "") {
+            EmployeeServices.findByDeptAndPos(depting, posing).then(res => { setEmployees(res.data) })
+        }
+        if(depting=="" && posing && searching===""){
+            EmployeeServices.findByPos(posing).then(res => { setEmployees(res.data) })
+        }
+    }, [searching]);
+
+    useEffect(() => {
+        if (posing && depting) {
+            EmployeeServices.findByCodeAndDeptAndPos(searching, depting, posing).then(res => {
+                setEmployees(res.data)
+            })
+        }
+        if (posing == "" && depting) {
+            EmployeeServices.findByCodeAndDept(searching, depting).then(res => {
+                setEmployees(res.data);
+            })
+        }
+        if (posing && depting=="") {
+            EmployeeServices.findByCodeAndPos(searching,posing).then(res => {
+                setEmployees(res.data);
+            })
+        }
+        if (posing === "" && depting === "" && search) {
+            const test1 = [];
             for (var i = 0; i < temp.length; i++) {
-                //console.log(temp[i].emp_ID);
-                if (Number(link) === temp[i].emp_ID) {
-                    EmployeeServices.list(link).then(res => { test1.push(res.data); setEmployees(test1); });
+                var fla = 0;
+                if (searching === temp[i].employeeCode) {
+                    EmployeeServices.findByCode(searching).then(res => { test1.push(res.data); setEmployees(test1); });
                     fla = 1;
                     break;
                 }
             }
-            if (fla == 0) {
-
-                setEmployees([]);
+            if (fla === 0) {
+                EmployeeServices.findByFname(searching).then(res => { setEmployees(res.data) });
             }
         }
-        else {
-            EmployeeServices.list(link).then(res => { setEmployees(res.data); });
+    }, [searching])
+    //chọn dept nhận pos
+    useEffect(() => {
+        if (posing && searching == "") {
+            EmployeeServices.findByDeptAndPos(depting, posing).then(res => { setEmployees(res.data) })
         }
+        if (posing && searching !== "") {
+            EmployeeServices.findByCodeAndDeptAndPos(searching, depting, posing).then(res => {
+                setEmployees(res.data)
+            })
+        }
+        if (posing === "" && searching !== "") {
+            EmployeeServices.findByCodeAndDept(searching, depting).then(res => {
+                setEmployees(res.data)
+            })
+        }
+        if (posing === "" && searching === "") {
+            EmployeeServices.findByDept(depting).then(res => { setEmployees(res.data) })
+        }
+        if (posing!=="" && search === "" && depting === "") {
+            EmployeeServices.findByPos(posing).then(res => { setEmployees(res.data) })
+        }
+    }, [depting])
+    //chọn pos nhân dept
+    useEffect(() => {
+        if (depting && searching == "") {
+            EmployeeServices.findByDeptAndPos(depting, posing).then(res => { setEmployees(res.data) })
+        }
+        if (depting && searching !== "") {
+            EmployeeServices.findByCodeAndDeptAndPos(searching, depting, posing).then(res => { setEmployees(res.data) })
+        }
+        if (depting === "" && search !== "") {
+            EmployeeServices.findByCodeAndPos(searching, posing).then(res => { setEmployees(res.data) })
+        }
+        if (depting === "" && searching === "") {
+            EmployeeServices.findByPos(posing).then(res => { setEmployees(res.data) })
+        }
+    }, [posing])
 
-    },[]);
     const { Option } = Select;
     const { Search } = Input;
     const onShowSizeChange = (current, pageSize) => {
@@ -84,7 +154,6 @@ const Table = (props) => {
     }
     const currentEmployees = employees.slice(indexOfFirst, indexOfLast);
 
-
     const optionsDept = deptOptions.map((e) => {
         return (
             <Option value={e}>Department 0{e}</Option>
@@ -93,15 +162,9 @@ const Table = (props) => {
 
     const optionsPos = posOptions.map((e) => {
         return (
-            <Option value={e}>{e === 1 ? "Nhân viên văn phòng" : "Công nhân"}</Option>
+            <Option value={e}>{e === 2 ? "Nhân viên văn phòng" : "Công nhân"}</Option>
         );
     })
-
-    const employee = currentEmployees.map((e, index) => {
-        return (
-            <Item e={e} test={transmiss} />
-        );
-    });
     const layout = {
         labelCol: { span: 6 },
         wrapperCol: { span: 18 },
@@ -114,30 +177,30 @@ const Table = (props) => {
         setAddModal(false);
     }
     const onFinish = () => {
-       const employee={
-           "employeeCode":code.current.props.value,
-           "timeCheckCode":parseInt(timeCheckCode.current.props.value),
-           "firstName":firstName.current.props.value,
-           "lastName":lastName.current.props.value,
-           "startdate":startDate.current.props.value._i
-       }
-       const args = {
-        message: 'Created Successfully',
-        description:
-            'An new employee was added in Your System !',
-        duration: 1,
-        icon:<UserAddOutlined />
-    };
-       EmployeeServices.add(department.current.props.value,position.current.props.value,employee).then(res=>{
+        const employee = {
+            "employeeCode": code.current.props.value,
+            "timeCheckCode": parseInt(timeCheckCode.current.props.value),
+            "firstName": firstName.current.props.value,
+            "lastName": lastName.current.props.value,
+            "startdate": startDate.current.props.value._i
+        }
+        const args = {
+            message: 'Created Successfully',
+            description:
+                'An new employee was added in Your System !',
+            duration: 1,
+            icon: <UserAddOutlined />
+        };
+        EmployeeServices.add(department.current.props.value, position.current.props.value, employee).then(res => {
             setLink("1");
             setLink("");
             setAddModal(false);
-            
-       },notification.open(args))
+
+        }, notification.open(args))
 
     }
-    const test = (a) => {
-        setLink(a);
+    const getEmployeeByCodeAndFname = (a) => {
+        setSearching(a);
     }
     useEffect(() => {
         EmployeeServices.list(link).then(res => {
@@ -147,25 +210,55 @@ const Table = (props) => {
     const handleDatePickerChange = (date, dateString) => {
         setStartDate(dateString);
     }
+    const getDepartment = (a) => {
+        setDepting(a);
+    }
+    const getOption = (a) => {
+        setPosing(a);
+    }
+
+    const employee = currentEmployees.map((e, index) => {
+        return (
+            <Item e={e} test={transmiss} />
+        );
+    });
+
     return (
         <div>
             <div className="container">
+                <h5>Employees</h5>
                 <div className="card">
                     <div className="card-header">
                         <div className="row align-items-center" >
-                            <div className="col-md-4">
-                                <h5>Employee:</h5>
+                            <div className="col-md-3">
                                 <Search
-                                    placeholder="Input employee name "
-                                    onSearch={value => test(value)}
+                                    placeholder="Search..."
+                                    onSearch={value => getEmployeeByCodeAndFname(value)}
                                     style={{ width: 250 }}
                                     size="middle"
                                     allowClear
                                     ref={search}
                                 />
                             </div>
-                            <div className="col-md-4"></div>
-                            <div className="col-md-4">
+                            <div className="col-md-6">
+                                <Select
+                                    showSearch
+                                    style={{ width: 250 }}
+                                    placeholder="Select a department"
+                                    onChange={getDepartment}>
+                                    <Option value="">All</Option>
+                                    {optionsDept}
+                                </Select>
+                                <Select
+                                    showSearch
+                                    style={{ width: 250, float: "right" }}
+                                    placeholder="Select a position"
+                                    onChange={getOption}>
+                                    <Option value="">All</Option>
+                                    {optionsPos}
+                                </Select>
+                            </div>
+                            <div className="col-md-3">
                                 <Tooltip placement="topRight" title="Export!">
                                     <Popconfirm title="Do you export to excel!">
                                         <Button
@@ -193,7 +286,7 @@ const Table = (props) => {
                                         <Button key="back" onClick={handleCancel}>
                                             Cancel
                              </Button>,
-                                        <Button key="submit" type="primary" htmlType="submit" onClick={onFinish}  style={{ float: "right" }}>
+                                        <Button key="submit" type="primary" htmlType="submit" onClick={onFinish} style={{ float: "right" }}>
                                             Create
                                  </Button>
 
@@ -268,7 +361,7 @@ const Table = (props) => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {employee.length !== 0 ? employee : <Empty />}
+                                    {employee}
                                 </tbody>
                             </table>
                             <Pagination

@@ -1,5 +1,5 @@
 package com.macia.HRs.entity;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -9,9 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @SuppressWarnings("JpaDataSourceORMInspection")
 @Entity
@@ -22,6 +20,8 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(name = "holiday_findAll",
                 query = "SELECT d FROM Holiday d"),
+        @NamedQuery(name = "holiday_findAllAvailable",
+                query = "SELECT d FROM Holiday d where d.isDeleted=false "),
         @NamedQuery(name = "holiday_findByName",
                 query = "SELECT d FROM Holiday d WHERE d.dayName = :dayName")
 })
@@ -60,7 +60,7 @@ public class Holiday implements Serializable {
     private LocalDateTime modifyDate;
 
     @Column(name = "ModifyBy")
-    private Integer modifyDy;
+    private Integer modifyBy;
 
     @Column(name = "IsDeleted")
     private Boolean isDeleted;

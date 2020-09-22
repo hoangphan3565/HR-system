@@ -2,11 +2,11 @@ package com.macia.HRs.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.macia.HRs.utility.Gender;
-import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -42,7 +42,24 @@ import java.util.List;
         @NamedQuery(name = "employee_findByFirstName",
                 query = "SELECT e FROM Employee e WHERE e.firstName = :firstName"),
         @NamedQuery(name = "employee_findAllEmployeeByFirstName",
-                query = "from Employee e where LOWER(e.firstName) like '%' || :firstname ||'%'"),
+                query = "from Employee e where LOWER(e.firstName) like '%' || LOWER(:firstname) ||'%'"),
+        @NamedQuery(name = "employee_findAllEmployeeByCode",
+                query = "from Employee e where LOWER(e.employeeCode) like '%' || LOWER(:code) ||'%'"),
+        @NamedQuery(name="employee_findAllEmployeeByDepAndPos",
+                query = "from Employee e where e.department.DEP_ID=:deptid and e.position.POS_ID=:posid"),
+        @NamedQuery(name="employee_findAllEmployeeByCodeAndPos",
+                query = "from Employee e where LOWER(e.employeeCode) like '%' || LOWER(:code) ||'%' and e.position.POS_ID=:posid"),
+        @NamedQuery(name="employee_findAllEmployeeByCodeAndDep",
+                query = "from Employee e where LOWER(e.employeeCode) like '%' || LOWER(:code) ||'%' and e.department.DEP_ID=:deptid"),
+        @NamedQuery(name="employee_findAllEmployeeByCodeAndDepAndPos",
+                query = "from Employee e where LOWER(e.employeeCode) like '%' || LOWER(:code) ||'%' and e.department.DEP_ID=:deptid and e.position.POS_ID=:posid"),
+        @NamedQuery(name="employee_findAllEmployeeByFnameAndPos",
+                query = "from Employee e where LOWER(e.firstName) like '%' || LOWER(:fname) ||'%' and e.position.POS_ID=:posid"),
+        @NamedQuery(name="employee_findAllEmployeeByFnameAndDep",
+                query = "from Employee e where LOWER(e.firstName) like '%' || LOWER(:fname) ||'%' and e.department.DEP_ID=:deptid"),
+        @NamedQuery(name="employee_findAllEmployeeByFnameAndDepAndPos",
+                query = "from Employee e where LOWER(e.firstName) like '%' || LOWER(:fname) ||'%' and e.department.DEP_ID=:deptid and e.position.POS_ID=:posid")
+
 })
 public class Employee implements Serializable {
 
@@ -83,7 +100,7 @@ public class Employee implements Serializable {
     private LocalDateTime modifyDate;
 
     @Column(name = "ModifyBy")
-    private Integer modifyby;
+    private Integer modifyBy;
 
     //,columnDefinition = "Boolean default '0'"
     @Column(name = "isDeleted")

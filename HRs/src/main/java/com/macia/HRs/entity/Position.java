@@ -20,12 +20,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @NamedQueries({
-        @NamedQuery(name = "department.findAll",
+        @NamedQuery(name = "position_findAll",
                 query = "SELECT p FROM Position p"),
-        @NamedQuery(name = "department.findByName",
+        @NamedQuery(name = "position_findAllAvailable",
+        query = "SELECT p FROM Position p where p.isDeleted=false "),
+        @NamedQuery(name = "position_findByName",
                 query = "SELECT p FROM Position p WHERE p.positionName = :posname"),
-        @NamedQuery(name = "department.findAllDepartmentByName",
-                query = "from Position p where LOWER(p.positionName) like '%' || :posname ||'%'"),
 })
 
 public class Position implements Serializable {
@@ -50,7 +50,7 @@ public class Position implements Serializable {
     private LocalDateTime modifyDate;
 
     @Column(name = "ModifyBy")
-    private Integer modifyDy;
+    private Integer modifyBy;
 
     @Column(name = "IsDeleted")
     private Boolean isDeleted;

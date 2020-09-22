@@ -1,6 +1,5 @@
 package com.macia.HRs.entity;
 
-import com.macia.HRs.utility.Gender;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -20,8 +19,8 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(exclude = {"EMS_ID"})
 @ToString(exclude = {"employee"})
 @NamedQueries({
-        @NamedQuery(name = "employeeshift_findAll",
-                query = "SELECT es FROM Employee_Shift es"),
+        @NamedQuery(name = "employeeshift_findAllAvailable",
+                query = "SELECT es FROM Employee_Shift es where es.isdeleted=false"),
 })
 public class Employee_Shift implements Serializable {
 
@@ -48,7 +47,7 @@ public class Employee_Shift implements Serializable {
     private LocalDateTime modifyDate;
 
     @Column(name = "ModifyBy")
-    private Integer modifyby;
+    private Integer modifyBy;
 
     @Column(name = "isDeleted")
     private Boolean isdeleted;
