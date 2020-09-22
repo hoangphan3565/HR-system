@@ -1,12 +1,18 @@
-import React from 'react';
+import React,{useRef,useEffect} from 'react';
 import {Tooltip, Button, Modal, Form, Input, Select, DatePicker, Popconfirm, Statistic, Card,notification } from 'antd';
 import { EditOutlined, UsergroupDeleteOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import { UserOutlined } from '@ant-design/icons';
+import moment from 'moment';
+import DepartmentService from '../../Services/DepartmentService';
 const Item = (props) => {
     const { Search } = Input;
+    const [form] = Form.useForm();
     const [visible, setVisible] = useState(false);
     const [updateVisible, setUpdateVisible] = useState(false);
+    const [startDate,setStartDate]=useState();
+    const departmentName=useRef();
+    const startDate1 = useRef();
     const layout = {
         labelCol: { span: 6 },
         wrapperCol: { span: 18 },
@@ -17,6 +23,7 @@ const Item = (props) => {
     }
     const toggleUpdateVisible = () => {
         setUpdateVisible(true);
+        setStartDate(props.e.startDate)
     }
     const handleEmplCancel = () => {
         setVisible(false);
@@ -25,15 +32,39 @@ const Item = (props) => {
         setUpdateVisible(false);
     }
     const onFinish = () => {
-        setUpdateVisible(false);
+       const department={
+           "departmentName":departmentName.current.props.value,
+           "startDate":startDate1.current.props.value._i
+       }
         const args = {
             message: 'Updated Successfully',
             description:
                 'This department was updated in Your System !',
             duration: 1,
         };
-        notification.open(args);
+        DepartmentService.update(props.e.dep_ID,1,department).then(res=>{ setUpdateVisible(false);
+            props.test("");
+            props.test(1)},notification.success(args));
     }
+    const handleDatePickerChange = (date, dateString) => {
+        setStartDate(dateString);
+    }
+    useEffect(() => {
+        form.setFieldsValue({
+           deptName:props.e.departmentName
+        });
+    },)
+    const onDelete=()=>{
+        const args = {
+            message: 'Deleted Successfully',
+            description:
+                'This department was deleted in Your System !',
+            duration: 1,
+        };
+        DepartmentService.clear(props.e.dep_ID,1).then(res=>{
+            props.test(1);props.test("")
+        },notification.success(args))
+    };
     return (
         <tr key={props.e.id}>
             <td>{props.e.dep_ID}</td>
@@ -60,27 +91,30 @@ const Item = (props) => {
                           </Button>
                         ]}
                     >
-                        <Form {...layout}>
-                            <Form.Item
-                                label="Id"
-                                name="deptId"
-                                rules={[{ required: true }]}
-                                hasFeedback>
-                                <Input size="middle" />
-                            </Form.Item>
+                        <Form {...layout} form={form} name="control-hooks">
                             <Form.Item
                                 label="Name"
                                 name="deptName"
                                 rules={[{ required: true }]}
                                 hasFeedback>
-                                <Input size="middle" />
+                                <Input size="middle" ref={departmentName}/>
                             </Form.Item>
                             <Form.Item
                                 label="StartDate"
                                 name="startDate"
                                 rules={[{ required: true }]}
                                 hasFeedback>
-                                <DatePicker size="middle" style={{ width: 354 }} />
+                                    {
+                                        console.log(startDate)
+                                    }
+                                <DatePicker 
+                                size="middle" 
+                                style={{ width: 354 }}
+                                value={moment(startDate, "YYYY-MM-DD")}
+                                style={{ width: 354 }}
+                                onChange={(date, dateString) => handleDatePickerChange(date, dateString)}
+                                ref={startDate1}
+                                 />
                             </Form.Item>
 
                         </Form>
@@ -142,6 +176,7 @@ const Item = (props) => {
                     <Popconfirm
                         placement="top"
                         title="Are you sure delete this department!"
+                        onConfirm={onDelete}
                     >
                         <Button
                             shape="circle"

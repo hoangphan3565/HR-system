@@ -59,9 +59,6 @@ const Table = (props) => {
     for (let i = 0; i < pos.length; i++) {
         posOptions.push(pos[i].pos_ID)
     }
-    //-------------------------------------
-
-    console.log(searching, depting);
     useEffect(() => {
         if (depting === "" && posing == "" && searching == "") {
             EmployeeServices.list(searching).then(res => { setEmployees(res.data); });
@@ -69,11 +66,13 @@ const Table = (props) => {
         if (depting && posing && searching === "") {
             EmployeeServices.findByDeptAndPos(depting, posing).then(res => { setEmployees(res.data) })
         }
-        if(depting=="" && posing && searching===""){
-            EmployeeServices.findByPos(posing).then(res => { setEmployees(res.data) })
+        if(depting==="" && posing && searching===""){
+            EmployeeServices.findByPos(posing).then(res => { setEmployees(res.data) })  
         }
-    }, [searching]);
-
+    }, [searching,posing,depting,link]);
+    useEffect(()=>{
+        EmployeeServices.list(link).then(res => { setEmployees(res.data); });
+    },[link])
     useEffect(() => {
         if (posing && depting) {
             EmployeeServices.findByCodeAndDeptAndPos(searching, depting, posing).then(res => {
@@ -123,7 +122,7 @@ const Table = (props) => {
         if (posing === "" && searching === "") {
             EmployeeServices.findByDept(depting).then(res => { setEmployees(res.data) })
         }
-        if (posing!=="" && search === "" && depting === "") {
+        if (posing && depting === "") {
             EmployeeServices.findByPos(posing).then(res => { setEmployees(res.data) })
         }
     }, [depting])
@@ -182,21 +181,21 @@ const Table = (props) => {
             "timeCheckCode": parseInt(timeCheckCode.current.props.value),
             "firstName": firstName.current.props.value,
             "lastName": lastName.current.props.value,
-            "startdate": startDate.current.props.value._i
+            "startdate": startDate.current.props.value._i,
+            "createby":1,
+            "isdeleted":false
         }
         const args = {
             message: 'Created Successfully',
             description:
                 'An new employee was added in Your System !',
             duration: 1,
-            icon: <UserAddOutlined />
         };
-        EmployeeServices.add(department.current.props.value, position.current.props.value, employee).then(res => {
-            setLink("1");
-            setLink("");
+        EmployeeServices.add(department.current.props.value,position.current.props.value,employee).then(res=>{
             setAddModal(false);
-
-        }, notification.open(args))
+            setLink("1");
+            setLink("")
+        },notification.success(args))
 
     }
     const getEmployeeByCodeAndFname = (a) => {
@@ -246,7 +245,7 @@ const Table = (props) => {
                                     style={{ width: 250 }}
                                     placeholder="Select a department"
                                     onChange={getDepartment}>
-                                    <Option value="">All</Option>
+                                    <Option value={""}>All</Option>
                                     {optionsDept}
                                 </Select>
                                 <Select
@@ -254,7 +253,7 @@ const Table = (props) => {
                                     style={{ width: 250, float: "right" }}
                                     placeholder="Select a position"
                                     onChange={getOption}>
-                                    <Option value="">All</Option>
+                                    <Option value={""}>All</Option>
                                     {optionsPos}
                                 </Select>
                             </div>
@@ -361,7 +360,7 @@ const Table = (props) => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {employee}
+                                    {employee.length!==0?employee:<Empty />}
                                 </tbody>
                             </table>
                             <Pagination

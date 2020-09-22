@@ -66,7 +66,7 @@ const Item = (props) => {
     const onDelete = () => {
 
         console.log(props.e.emp_ID);
-        axios.delete(`http://localhost:8080/api/employees/${props.e.emp_ID}`).then(res => {
+        axios.delete(`http://localhost:8080/api/employees/${props.e.emp_ID}/uid/1`).then(res => {
             props.test("1");
             props.test("");
         })

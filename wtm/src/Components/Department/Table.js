@@ -6,7 +6,12 @@ import './css/styles.css';
 import { useEffect, useRef } from 'react';
 import DepartmentService from '../../Services/DepartmentService';
 import moment from 'moment';
+
 const Table = (props) => {
+    const handleDatePickerChange = (date, dateString) => {
+        setStartDate(dateString);
+    }
+    const [form] = Form.useForm();
     const { Search } = Input;
     const [currentPage, setCurrentPage] = useState(1);
     const [perPage, setPerPage] = useState(10);
@@ -20,27 +25,30 @@ const Table = (props) => {
     const year = date1.toISOString();
     const a = year.slice(0, 10);
     const [start, setStartDate] = useState(`${a}`);
+    const departmentName = useRef();
+    const [fla, setFla] = useState();
+    const transmiss = (a) => {
+        setFla(a);
+    }
     const layout = {
         labelCol: { span: 6 },
         wrapperCol: { span: 18 },
     };
     const onFinish = () => {
-        if (startDate.current.props.value._i && deptName.current.props.value) {
+        if (startDate.current.props.value._i && departmentName.current.props.value) {
             const args = {
                 message: 'Created Successfully',
                 description:
                     'An new department was created in Your System !'
             };
             const department = {
-                "departmentName": deptName.current.props.value,
-                "startDate": startDate.current.props.value._i
-            }
-            DepartmentService.add(department).then(
-               res=>{
-                   setModal(false);
-               },notification.success(args)
-            )
+                "departmentName": departmentName.current.props.value,
+                "startDate": startDate.current.props.value._i,
+                "isdeleted": false
+            };
+            DepartmentService.add(department).then(res => { setModal(false); setFla(1); setFla("") }, notification.success(args));
         }
+
         else {
             const args = {
                 message: 'Created Unsucessfully',
@@ -61,7 +69,7 @@ const Table = (props) => {
         DepartmentService.list().then(res => {
             setDepartments(res.data);
         })
-    }, [])
+    },[fla])
     for (var i = 1; i <= Math.ceil(departments.length / perPage); i++) {
         pageNumbers.push(i);
     }
@@ -82,7 +90,7 @@ const Table = (props) => {
     const currentDept = departments.slice(indexOfFirst, indexOfLast);
     const employee1 = currentDept.map((e, index) => {
         return (
-            <Item e={e} key={index} />
+            <Item e={e} key={index} test={transmiss} />
         );
     })
     const onChange = (pageNumber) => {
@@ -91,10 +99,6 @@ const Table = (props) => {
     const onShowSizeChange = (current, pageSize) => {
         setPerPage(pageSize);
 
-    }
-    console.log(departments);
-    const handleDatePickerChange = (date, dateString) => {
-        setStartDate(dateString);
     }
     return (
         <div>
@@ -122,51 +126,46 @@ const Table = (props) => {
                                         </Button>
                                     </Popconfirm>
                                 </Tooltip>
-                                <Button icon={<UsergroupAddOutlined />} type="primary" id="addept" onClick={toggleModal} style={{ float: "right" }}>
-                                    Create
-                                </Button>
+                                <Tooltip placement="topRight" title="Add!">
+                                    <Button
+                                        id="btnaddempl"
+                                        icon={<UserAddOutlined />}
+                                        type="primary"
+                                        onClick={toggleModal}
+                                        style={{ float: "right" }}>Create</Button>
+                                </Tooltip>
                                 <Modal
+                                    title="Create Employee"
                                     visible={modal}
-                                    title="Create Department"
                                     onCancel={handleCancel}
                                     footer={[
                                         <Button key="back" onClick={handleCancel}>
                                             Cancel
-                          </Button>,
-                                        <Button key="submit" type="primary" onClick={onFinish}>
+                             </Button>,
+                                        <Button key="submit" type="primary" htmlType="submit" onClick={onFinish} style={{ float: "right" }}>
                                             Create
-                          </Button>
+                                 </Button>
+
                                     ]}
                                 >
-                                    <Form {...layout}>
+                                    <Form {...layout} onFinish={onFinish} form={form} name="control-hooks">
                                         <Form.Item
-                                            label="Name"
-                                            name="deptName"
+                                            label="Department"
+                                            name="dept"
                                             rules={[{ required: true }]}
                                             hasFeedback>
-                                            <Input size="middle" ref={deptName} />
+                                            <Input size="middle" ref={departmentName} />
                                         </Form.Item>
-                                        <Form.Item
-                                            label="StartDate"
-                                            name="startDate"
-                                            rules={[{ required: true }]}
-                                            hasFeedback>
-                                            {
-                                                console.log(start)
-                                            }
+                                        <Form.Item label="Start Date">
                                             <DatePicker
-
                                                 value={moment(`${start}`, "YYYY-MM-DD")}
                                                 style={{ width: 354 }}
                                                 onChange={(date, dateString) => handleDatePickerChange(date, dateString)}
                                                 ref={startDate}
-
                                             />
                                         </Form.Item>
-
                                     </Form>
                                 </Modal>
-
                             </div>
                         </div>
                     </div>

@@ -148,7 +148,7 @@ public class EmployeeResource {
         return employeeRepository.save(employee);
     }
   
-    @PostMapping("/create/dept/{deptid}/pos/{posid}")
+    @PostMapping("/crea	te/dept/{deptid}/pos/{posid}")
     @CrossOrigin("*")
     public Employee createEmployeeWithDeptAndPostID(@RequestBody Employee employee,@PathVariable(value = "deptid") Integer deptid,@PathVariable(value = "posid") Integer posid) {
         Department department = deptRepo.findById(deptid).orElseThrow(null);
