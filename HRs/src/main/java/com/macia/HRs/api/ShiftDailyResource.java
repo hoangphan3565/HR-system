@@ -66,12 +66,14 @@ public class ShiftDailyResource {
 
 
     @PostMapping()
+    @ResponseBody
     @CrossOrigin("*")
     public Shift_Daily createShiftDaily(@RequestBody Shift_Daily ShiftDaily) {
         return sidRepo.save(ShiftDaily);
     }
 
     @PutMapping("/{id}/uid/{uid}")
+    @ResponseBody
     @CrossOrigin("*")
     public ResponseEntity<Shift_Daily> updateShiftDaily(
             @PathVariable(value = "id") Integer ShiftDailyId,
