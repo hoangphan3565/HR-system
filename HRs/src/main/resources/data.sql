@@ -6,6 +6,10 @@ insert into department(department_name,start_date) values('Department 01','2019-
 insert into department(department_name,start_date) values('Department 02','2018-02-18');
 insert into department(department_name,start_date) values('Department 03','2020-06-18');
 insert into department(department_name,start_date) values('Department 04','2018-11-18');
+insert into department(department_name,start_date) values('Department 05','2019-01-18');
+insert into department(department_name,start_date) values('Department 06','2018-02-18');
+insert into department(department_name,start_date) values('Department 07','2020-06-18');
+insert into department(department_name,start_date) values('Department 08','2018-11-18');
 
 insert into position(position_name) values('Cong nhan');
 insert into position(position_name) values('Nhan vien van phong');
