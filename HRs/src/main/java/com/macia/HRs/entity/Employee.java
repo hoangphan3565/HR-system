@@ -42,7 +42,7 @@ import java.util.List;
         @NamedQuery(name = "employee_findByFirstName",
                 query = "SELECT e FROM Employee e WHERE e.firstName = :firstName"),
         @NamedQuery(name = "employee_findAllEmployeeByFirstName",
-                query = "from Employee e where LOWER(e.firstName) like '%' || :firstname ||'%'"),
+                query = "from Employee e where LOWER(e.firstName) like '%' || :firstname ||'%'")
 })
 public class Employee implements Serializable {
 

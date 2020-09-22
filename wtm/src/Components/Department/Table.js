@@ -40,8 +40,6 @@ const Table = (props) => {
                    setModal(false);
                },notification.success(args)
             )
-
-
         }
         else {
             const args = {

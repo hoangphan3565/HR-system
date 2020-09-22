@@ -17,10 +17,11 @@ const Table = (props) => {
     const startDate = useRef();
     const timeCheckCode = useRef();
 
-    const [link, setLink] = useState("");
+    const [searching, setSearching] = useState("");
+    const [posing, setPosing] = useState("");
+    const [depting, setDepting] = useState("");
 
     const [employees, setEmployees] = useState([]);
-    const [employees1,setEmployees1]=useState([]);
     const [temp, setTemp] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [perPage, setPerPage] = useState(10);
@@ -34,9 +35,11 @@ const Table = (props) => {
     const [start, setStartDate] = useState(`${a}`);
     const [getDept, setGetDept] = useState();
     const [getPos, setGetPos] = useState();
+    const [link, setLink] = useState("");
     const transmiss = (a) => {
         setLink(a);
     }
+    //--------------Lấy dữ liệu dept với pos
     useEffect(() => {
         DepartmentService.list().then(res => {
             setDept(res.data);
@@ -44,8 +47,10 @@ const Table = (props) => {
         PositionService.list().then(res => {
             setPos(res.data);
         })
-        EmployeeServices.list(link).then(res => { setEmployees1(res.data); });
-    }, [])
+        EmployeeServices.list().then(res=>{
+            setTemp(res.data)
+        })
+    },[])
     const deptOptions = [];
     for (let i = 0; i < dept.length; i++) {
         deptOptions.push(dept[i].dep_ID)
@@ -54,28 +59,90 @@ const Table = (props) => {
     for (let i = 0; i < pos.length; i++) {
         posOptions.push(pos[i].pos_ID)
     }
+    //-------------------------------------
+
+    console.log(searching, depting);
     useEffect(() => {
-        const test1 = [];
-        if (link !== "") {
-            var fla = 0;
+        if (depting === "" && posing == "" && searching == "") {
+            EmployeeServices.list(searching).then(res => { setEmployees(res.data); });
+        }
+        if (depting && posing && searching === "") {
+            EmployeeServices.findByDeptAndPos(depting, posing).then(res => { setEmployees(res.data) })
+        }
+        if(depting=="" && posing && searching===""){
+            EmployeeServices.findByPos(posing).then(res => { setEmployees(res.data) })
+        }
+    }, [searching]);
+
+    useEffect(() => {
+        if (posing && depting) {
+            EmployeeServices.findByCodeAndDeptAndPos(searching, depting, posing).then(res => {
+                setEmployees(res.data)
+            })
+        }
+        if (posing == "" && depting) {
+            EmployeeServices.findByCodeAndDept(searching, depting).then(res => {
+                setEmployees(res.data);
+            })
+        }
+        if (posing && depting=="") {
+            EmployeeServices.findByCodeAndPos(searching,posing).then(res => {
+                setEmployees(res.data);
+            })
+        }
+        if (posing === "" && depting === "" && search) {
+            const test1 = [];
             for (var i = 0; i < temp.length; i++) {
-                //console.log(temp[i].emp_ID);
-                if (Number(link) === temp[i].emp_ID) {
-                    EmployeeServices.list(link).then(res => { test1.push(res.data); setEmployees(test1); });
+                var fla = 0;
+                if (searching === temp[i].employeeCode) {
+                    EmployeeServices.findByCode(searching).then(res => { test1.push(res.data); setEmployees(test1); });
                     fla = 1;
                     break;
                 }
             }
             if (fla === 0) {
-                EmployeeServices.findByFname(link).then(res => { setEmployees(res.data) });
-                // console.log(test1);
+                EmployeeServices.findByFname(searching).then(res => { setEmployees(res.data) });
             }
         }
-        else {
-            EmployeeServices.list(link).then(res => { setEmployees(res.data); });
+    }, [searching])
+    //chọn dept nhận pos
+    useEffect(() => {
+        if (posing && searching == "") {
+            EmployeeServices.findByDeptAndPos(depting, posing).then(res => { setEmployees(res.data) })
         }
+        if (posing && searching !== "") {
+            EmployeeServices.findByCodeAndDeptAndPos(searching, depting, posing).then(res => {
+                setEmployees(res.data)
+            })
+        }
+        if (posing === "" && searching !== "") {
+            EmployeeServices.findByCodeAndDept(searching, depting).then(res => {
+                setEmployees(res.data)
+            })
+        }
+        if (posing === "" && searching === "") {
+            EmployeeServices.findByDept(depting).then(res => { setEmployees(res.data) })
+        }
+        if (posing!=="" && search === "" && depting === "") {
+            EmployeeServices.findByPos(posing).then(res => { setEmployees(res.data) })
+        }
+    }, [depting])
+    //chọn pos nhân dept
+    useEffect(() => {
+        if (depting && searching == "") {
+            EmployeeServices.findByDeptAndPos(depting, posing).then(res => { setEmployees(res.data) })
+        }
+        if (depting && searching !== "") {
+            EmployeeServices.findByCodeAndDeptAndPos(searching, depting, posing).then(res => { setEmployees(res.data) })
+        }
+        if (depting === "" && search !== "") {
+            EmployeeServices.findByCodeAndPos(searching, posing).then(res => { setEmployees(res.data) })
+        }
+        if (depting === "" && searching === "") {
+            EmployeeServices.findByPos(posing).then(res => { setEmployees(res.data) })
+        }
+    }, [posing])
 
-    }, [link]);
     const { Option } = Select;
     const { Search } = Input;
     const onShowSizeChange = (current, pageSize) => {
@@ -85,7 +152,7 @@ const Table = (props) => {
     const onChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     }
-    const currentEmployees =employees.slice(indexOfFirst, indexOfLast);
+    const currentEmployees = employees.slice(indexOfFirst, indexOfLast);
 
     const optionsDept = deptOptions.map((e) => {
         return (
@@ -95,7 +162,7 @@ const Table = (props) => {
 
     const optionsPos = posOptions.map((e) => {
         return (
-            <Option value={e}>{e === 1 ? "Nhân viên văn phòng" : "Công nhân"}</Option>
+            <Option value={e}>{e === 2 ? "Nhân viên văn phòng" : "Công nhân"}</Option>
         );
     })
     const layout = {
@@ -132,8 +199,8 @@ const Table = (props) => {
         }, notification.open(args))
 
     }
-    const test = (a) => {
-        setLink(a);
+    const getEmployeeByCodeAndFname = (a) => {
+        setSearching(a);
     }
     useEffect(() => {
         EmployeeServices.list(link).then(res => {
@@ -144,23 +211,18 @@ const Table = (props) => {
         setStartDate(dateString);
     }
     const getDepartment = (a) => {
-        //console.log(typeof(a));
-        setGetDept(a);
-      
-      
-        //employees.filter(e=>e.department.dep_ID===a)
-        //console.log( employees.filter(e=>e.department.dep_ID===a));
+        setDepting(a);
     }
-
+    const getOption = (a) => {
+        setPosing(a);
+    }
 
     const employee = currentEmployees.map((e, index) => {
         return (
             <Item e={e} test={transmiss} />
         );
     });
-    const getOption = (a) => {
-        console.log(a);
-    }
+
     return (
         <div>
             <div className="container">
@@ -171,7 +233,7 @@ const Table = (props) => {
                             <div className="col-md-3">
                                 <Search
                                     placeholder="Search..."
-                                    onSearch={value => test(value)}
+                                    onSearch={value => getEmployeeByCodeAndFname(value)}
                                     style={{ width: 250 }}
                                     size="middle"
                                     allowClear
@@ -184,6 +246,7 @@ const Table = (props) => {
                                     style={{ width: 250 }}
                                     placeholder="Select a department"
                                     onChange={getDepartment}>
+                                    <Option value="">All</Option>
                                     {optionsDept}
                                 </Select>
                                 <Select
@@ -191,8 +254,9 @@ const Table = (props) => {
                                     style={{ width: 250, float: "right" }}
                                     placeholder="Select a position"
                                     onChange={getOption}>
+                                    <Option value="">All</Option>
                                     {optionsPos}
-                               </Select>
+                                </Select>
                             </div>
                             <div className="col-md-3">
                                 <Tooltip placement="topRight" title="Export!">

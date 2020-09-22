@@ -95,7 +95,7 @@ public class EmployeeResource {
     public List<Employee> getAllEmployeeByPosId(@PathVariable(value = "posid") Integer posid){
         return employeeRepository.findByPosition(posRepo.findById(posid));
     }
-
+    
     @GetMapping("/dept/{deptid}/count")
     @CrossOrigin("*")
     public Integer countEmployeeInDepartment(@PathVariable(value = "deptid") Integer deptid) {
@@ -126,7 +126,6 @@ public class EmployeeResource {
     }
     
     /*==================== Get EMP details Via PROC by firstname=====================*/
-    @CrossOrigin(origins = "*")
     @GetMapping("/find/fname/{fname}")
     @CrossOrigin("*")
     @ResponseBody
@@ -134,7 +133,7 @@ public class EmployeeResource {
             throws ResourceNotFoundException {
         return employeeService.findAllEmpViaProcByFirstName(fname);
     }
-
+  
     @PostMapping("/create/dept/{deptid}")
     public Employee createEmployeeWithDeptID(@RequestBody Employee employee,@PathVariable(value = "deptid") Integer deptid) {
         Department department = deptRepo.findById(deptid).orElseThrow(null);
@@ -148,7 +147,6 @@ public class EmployeeResource {
         return employeeRepository.save(employee);
     }
   
-    @CrossOrigin(origins = "*")
     @PostMapping("/create/dept/{deptid}/pos/{posid}")
     @CrossOrigin("*")
     public Employee createEmployeeWithDeptAndPostID(@RequestBody Employee employee,@PathVariable(value = "deptid") Integer deptid,@PathVariable(value = "posid") Integer posid) {
