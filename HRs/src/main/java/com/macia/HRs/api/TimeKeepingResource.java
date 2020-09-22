@@ -71,6 +71,7 @@ public class TimeKeepingResource {
     }
 
     @PutMapping("/{id}/uid/{uid}")
+    @ResponseBody
     @CrossOrigin("*")
     public ResponseEntity<TimeKeeping> updateTimeKeeping(
             @PathVariable(value = "id") Integer timekeepingId,

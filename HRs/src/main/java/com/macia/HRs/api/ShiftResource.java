@@ -43,6 +43,7 @@ public class ShiftResource {
 
 
     @PostMapping()
+    @ResponseBody
     @CrossOrigin("*")
     public Shift createShift(@RequestBody Shift Shift) {
         return ShiftRepository.save(Shift);
@@ -64,6 +65,7 @@ public class ShiftResource {
     }
     @PutMapping("/{id}/uid/{uid}")
     @CrossOrigin("*")
+    @ResponseBody
     public ResponseEntity<Shift> updateShift(
             @PathVariable(value = "id") Integer ShiftId,
             @PathVariable(value = "uid") Integer uid,

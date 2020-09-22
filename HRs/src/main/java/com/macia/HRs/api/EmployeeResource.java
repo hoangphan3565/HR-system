@@ -109,30 +109,7 @@ public class EmployeeResource {
             throws ResourceNotFoundException {
         return employeeRepository.findByFirstName(name);
     }
-    /*==================== Get EMP details Via NamedQuery by firstname=====================*/
-//    @GetMapping("/find/fname/{fname}")
-//    @ResponseBody
-//    public List<Employee> findEmployeeByFirstName(@PathVariable(value = "fname") String name)
-//            throws ResourceNotFoundException {
-//        return employeeService.findEmployeeByFirstName(name);
-//    }
 
-    @GetMapping("/find/code/{code}")
-    @CrossOrigin("*")
-    @ResponseBody
-    public ResponseEntity<Employee> getEmployeeByCode(@PathVariable(value = "code") String empcode)
-            throws ResourceNotFoundException {
-        return ResponseEntity.ok().body(employeeRepository.findByEmployeeCode(empcode));
-    }
-  
-    /*==================== Get EMP details Via PROC by firstname=====================*/
-    @CrossOrigin("*")
-    @GetMapping("/find/fname/{fname}")
-    @ResponseBody
-    public List<Employee> findEmployeeByFirstName(@PathVariable(value = "fname") String fname)
-            throws ResourceNotFoundException {
-        return employeeService.findEmployeeByFirstName(fname);
-    }
     @CrossOrigin("*")
     @PostMapping("/create/dept/{deptid}")
     public Employee createEmployeeWithDeptID(@RequestBody Employee employee,@PathVariable(value = "deptid") Integer deptid) {
@@ -171,28 +148,71 @@ public class EmployeeResource {
 		e.setPosition(p);
 		return employeeRepository.save(e);
 	}
-    @GetMapping("/dept/{deptid}/pos/{posid}")
+
+	/*[Start]==========================---Multiple Search---==========================*/
+    @GetMapping("/find/code/{code}")
+    @CrossOrigin("*")
+    @ResponseBody
+    public List<Employee> getEmployeeByCode(@PathVariable(value = "code") String empcode)
+            throws ResourceNotFoundException {
+        return employeeService.findEmployeeByCode(empcode);
+    }
+
+    @CrossOrigin("*")
+    @GetMapping("/find/fname/{fname}")
+    @ResponseBody
+    public List<Employee> findEmployeeByFirstName(@PathVariable(value = "fname") String fname)
+            throws ResourceNotFoundException {
+        return employeeService.findEmployeeByFirstName(fname);
+    }
+
+    @GetMapping("/find/dept/{deptid}/pos/{posid}")
     @CrossOrigin("*")
     @ResponseBody
     public List<Employee> getAllEmployeeByDeptIdAndPosId(@PathVariable(value = "deptid") Integer deptid,@PathVariable(value = "posid") Integer posid){
         return employeeService.getEmloyeeByDepartmentAndPosition(deptid, posid);
     }
-    @GetMapping("/code/{code}/pos/{posid}")
+
+    @GetMapping("/find/code/{code}/pos/{posid}")
     @CrossOrigin("*")
     @ResponseBody
     public ResponseEntity<List<Employee>> getEmployeeByCodeAndPosId(@PathVariable(value = "code") String code,@PathVariable(value = "posid") Integer posid){
     	 return ResponseEntity.ok().body(employeeService.getEmloyeeByCodeAndPosition(code,posid));
     }
-    @GetMapping("/code/{code}/dept/{deptid}")
+
+    @GetMapping("/find/code/{code}/dept/{deptid}")
     @CrossOrigin("*")
     @ResponseBody
     public ResponseEntity<List<Employee>> getEmployeeByCodeAndDept(@PathVariable(value = "code") String code,@PathVariable(value = "deptid") Integer deptid){
     	 return ResponseEntity.ok().body(employeeService.getEmloyeeByCodeAndDepartment(code,deptid));
     }
-    @GetMapping("/code/{code}/dept/{deptid}/pos/{posid}")
+
+    @GetMapping("/find/code/{code}/dept/{deptid}/pos/{posid}")
     @CrossOrigin("*")
     @ResponseBody
     public ResponseEntity<List<Employee>> getEmployeeByCodeAndDeptAndPos(@PathVariable(value = "code") String code,@PathVariable(value = "deptid") Integer deptid,@PathVariable(value = "posid") Integer posid){
     	 return ResponseEntity.ok().body(employeeService.getEmloyeeByCodeAndDepartmentAndPosition(code, deptid, posid));
     }
+
+    @GetMapping("/find/fname/{fname}/pos/{posid}")
+    @CrossOrigin("*")
+    @ResponseBody
+    public ResponseEntity<List<Employee>> getEmployeeByfnameAndPosId(@PathVariable(value = "fname") String fname,@PathVariable(value = "posid") Integer posid){
+        return ResponseEntity.ok().body(employeeService.getEmloyeeByFnameAndPosition(fname,posid));
+    }
+
+    @GetMapping("/find/fname/{fname}/dept/{deptid}")
+    @CrossOrigin("*")
+    @ResponseBody
+    public ResponseEntity<List<Employee>> getEmployeeByfnameAndDept(@PathVariable(value = "fname") String fname,@PathVariable(value = "deptid") Integer deptid){
+        return ResponseEntity.ok().body(employeeService.getEmloyeeByFnameAndDepartment(fname,deptid));
+    }
+
+    @GetMapping("/find/fname/{fname}/dept/{deptid}/pos/{posid}")
+    @CrossOrigin("*")
+    @ResponseBody
+    public ResponseEntity<List<Employee>> getEmployeeByfnameAndDeptAndPos(@PathVariable(value = "fname") String fname,@PathVariable(value = "deptid") Integer deptid,@PathVariable(value = "posid") Integer posid){
+        return ResponseEntity.ok().body(employeeService.getEmloyeeByFnameAndDepartmentAndPosition(fname, deptid, posid));
+    }
+    /*[End]==========================---Multiple Search---==========================*/
 }
