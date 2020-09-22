@@ -36,9 +36,8 @@ const Item = (props) => {
     }
     return (
         <tr key={props.e.id}>
-            <td></td>
-            <td>{props.e.deptid}</td>
-            <td>{props.e.deptName}</td>
+            <td>{props.e.dep_ID}</td>
+            <td>{props.e.departmentName}</td>
             <td>{props.e.startDate}</td>
             <td>
                 <Tooltip title="Update here!">

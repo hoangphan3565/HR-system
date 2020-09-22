@@ -5,7 +5,6 @@ import Item from './Item';
 import EmployeeServices from '../../Services/EmployeeServices';
 import DepartmentService from '../../Services/DepartmentService';
 import PositionService from '../../Services/PositionServices';
-import axios from 'axios';
 import moment from 'moment';
 const Table = (props) => {
 
@@ -21,6 +20,7 @@ const Table = (props) => {
     const [link, setLink] = useState("");
 
     const [employees, setEmployees] = useState([]);
+    const [employees1,setEmployees1]=useState([]);
     const [temp, setTemp] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [perPage, setPerPage] = useState(10);
@@ -32,6 +32,8 @@ const Table = (props) => {
     const year = date1.toISOString();
     const a = year.slice(0, 10);
     const [start, setStartDate] = useState(`${a}`);
+    const [getDept, setGetDept] = useState();
+    const [getPos, setGetPos] = useState();
     const transmiss = (a) => {
         setLink(a);
     }
@@ -42,6 +44,7 @@ const Table = (props) => {
         PositionService.list().then(res => {
             setPos(res.data);
         })
+        EmployeeServices.list(link).then(res => { setEmployees1(res.data); });
     }, [])
     const deptOptions = [];
     for (let i = 0; i < dept.length; i++) {
@@ -63,16 +66,16 @@ const Table = (props) => {
                     break;
                 }
             }
-            if (fla == 0) {
-
-                setEmployees([]);
+            if (fla === 0) {
+                EmployeeServices.findByFname(link).then(res => { setEmployees(res.data) });
+                // console.log(test1);
             }
         }
         else {
             EmployeeServices.list(link).then(res => { setEmployees(res.data); });
         }
 
-    },[]);
+    }, [link]);
     const { Option } = Select;
     const { Search } = Input;
     const onShowSizeChange = (current, pageSize) => {
@@ -82,8 +85,7 @@ const Table = (props) => {
     const onChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     }
-    const currentEmployees = employees.slice(indexOfFirst, indexOfLast);
-
+    const currentEmployees =employees.slice(indexOfFirst, indexOfLast);
 
     const optionsDept = deptOptions.map((e) => {
         return (
@@ -96,12 +98,6 @@ const Table = (props) => {
             <Option value={e}>{e === 1 ? "Nhân viên văn phòng" : "Công nhân"}</Option>
         );
     })
-
-    const employee = currentEmployees.map((e, index) => {
-        return (
-            <Item e={e} test={transmiss} />
-        );
-    });
     const layout = {
         labelCol: { span: 6 },
         wrapperCol: { span: 18 },
@@ -114,26 +110,26 @@ const Table = (props) => {
         setAddModal(false);
     }
     const onFinish = () => {
-       const employee={
-           "employeeCode":code.current.props.value,
-           "timeCheckCode":parseInt(timeCheckCode.current.props.value),
-           "firstName":firstName.current.props.value,
-           "lastName":lastName.current.props.value,
-           "startdate":startDate.current.props.value._i
-       }
-       const args = {
-        message: 'Created Successfully',
-        description:
-            'An new employee was added in Your System !',
-        duration: 1,
-        icon:<UserAddOutlined />
-    };
-       EmployeeServices.add(department.current.props.value,position.current.props.value,employee).then(res=>{
+        const employee = {
+            "employeeCode": code.current.props.value,
+            "timeCheckCode": parseInt(timeCheckCode.current.props.value),
+            "firstName": firstName.current.props.value,
+            "lastName": lastName.current.props.value,
+            "startdate": startDate.current.props.value._i
+        }
+        const args = {
+            message: 'Created Successfully',
+            description:
+                'An new employee was added in Your System !',
+            duration: 1,
+            icon: <UserAddOutlined />
+        };
+        EmployeeServices.add(department.current.props.value, position.current.props.value, employee).then(res => {
             setLink("1");
             setLink("");
             setAddModal(false);
-            
-       },notification.open(args))
+
+        }, notification.open(args))
 
     }
     const test = (a) => {
@@ -147,16 +143,34 @@ const Table = (props) => {
     const handleDatePickerChange = (date, dateString) => {
         setStartDate(dateString);
     }
+    const getDepartment = (a) => {
+        //console.log(typeof(a));
+        setGetDept(a);
+      
+      
+        //employees.filter(e=>e.department.dep_ID===a)
+        //console.log( employees.filter(e=>e.department.dep_ID===a));
+    }
+
+
+    const employee = currentEmployees.map((e, index) => {
+        return (
+            <Item e={e} test={transmiss} />
+        );
+    });
+    const getOption = (a) => {
+        console.log(a);
+    }
     return (
         <div>
             <div className="container">
+                <h5>Employees</h5>
                 <div className="card">
                     <div className="card-header">
                         <div className="row align-items-center" >
-                            <div className="col-md-4">
-                                <h5>Employee:</h5>
+                            <div className="col-md-3">
                                 <Search
-                                    placeholder="Input employee name "
+                                    placeholder="Search..."
                                     onSearch={value => test(value)}
                                     style={{ width: 250 }}
                                     size="middle"
@@ -164,8 +178,23 @@ const Table = (props) => {
                                     ref={search}
                                 />
                             </div>
-                            <div className="col-md-4"></div>
-                            <div className="col-md-4">
+                            <div className="col-md-6">
+                                <Select
+                                    showSearch
+                                    style={{ width: 250 }}
+                                    placeholder="Select a department"
+                                    onChange={getDepartment}>
+                                    {optionsDept}
+                                </Select>
+                                <Select
+                                    showSearch
+                                    style={{ width: 250, float: "right" }}
+                                    placeholder="Select a position"
+                                    onChange={getOption}>
+                                    {optionsPos}
+                               </Select>
+                            </div>
+                            <div className="col-md-3">
                                 <Tooltip placement="topRight" title="Export!">
                                     <Popconfirm title="Do you export to excel!">
                                         <Button
@@ -193,7 +222,7 @@ const Table = (props) => {
                                         <Button key="back" onClick={handleCancel}>
                                             Cancel
                              </Button>,
-                                        <Button key="submit" type="primary" htmlType="submit" onClick={onFinish}  style={{ float: "right" }}>
+                                        <Button key="submit" type="primary" htmlType="submit" onClick={onFinish} style={{ float: "right" }}>
                                             Create
                                  </Button>
 
@@ -268,7 +297,7 @@ const Table = (props) => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {employee.length !== 0 ? employee : <Empty />}
+                                    {employee}
                                 </tbody>
                             </table>
                             <Pagination
