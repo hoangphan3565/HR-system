@@ -37,6 +37,7 @@ public class UserActivityResource {
     public Long count() {
         return UserActivityRepository.count();
     }
+
     @DeleteMapping("/{id}/uid/{uid}")
     @CrossOrigin("*")
     public Map<String, Boolean> deleteUserActivity(@PathVariable(value = "id") Integer UserActivityId,@PathVariable(value = "uid") Integer uid) throws Exception {
@@ -65,7 +66,9 @@ public class UserActivityResource {
     }
 
 
-    @PostMapping("")
+    @PostMapping()
+    @CrossOrigin("*")
+    @ResponseBody
     public User_Activity createUserActivity(@RequestBody User_Activity UserActivity) {
         return UserActivityRepository.save(UserActivity);
     }
