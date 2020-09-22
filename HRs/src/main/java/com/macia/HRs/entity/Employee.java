@@ -42,7 +42,24 @@ import java.util.List;
         @NamedQuery(name = "employee_findByFirstName",
                 query = "SELECT e FROM Employee e WHERE e.firstName = :firstName"),
         @NamedQuery(name = "employee_findAllEmployeeByFirstName",
-                query = "from Employee e where LOWER(e.firstName) like '%' || :firstname ||'%'")
+                query = "from Employee e where LOWER(e.firstName) like '%' || LOWER(:firstname) ||'%'"),
+        @NamedQuery(name = "employee_findAllEmployeeByCode",
+                query = "from Employee e where LOWER(e.employeeCode) like '%' || LOWER(:code) ||'%'"),
+        @NamedQuery(name="employee_findAllEmployeeByDepAndPos",
+                query = "from Employee e where e.department.DEP_ID=:deptid and e.position.POS_ID=:posid"),
+        @NamedQuery(name="employee_findAllEmployeeByCodeAndPos",
+                query = "from Employee e where e.employeeCode=:code and e.position.POS_ID=:posid"),
+        @NamedQuery(name="employee_findAllEmployeeByCodeAndDep",
+                query = "from Employee e where e.employeeCode=:code and e.department.DEP_ID=:deptid"),
+        @NamedQuery(name="employee_findAllEmployeeByCodeAndDepAndPos",
+                query = "from Employee e where e.employeeCode=:code and e.department.DEP_ID=:deptid and e.position.POS_ID=:posid"),
+        @NamedQuery(name="employee_findAllEmployeeByFnameAndPos",
+                query = "from Employee e where LOWER(e.firstName) like '%' || LOWER(:fname) ||'%' and e.position.POS_ID=:posid"),
+        @NamedQuery(name="employee_findAllEmployeeByFnameAndDep",
+                query = "from Employee e where LOWER(e.firstName) like '%' || LOWER(:fname) ||'%' and e.department.DEP_ID=:deptid"),
+        @NamedQuery(name="employee_findAllEmployeeByFnameAndDepAndPos",
+                query = "from Employee e where LOWER(e.firstName) like '%' || LOWER(:fname) ||'%' and e.department.DEP_ID=:deptid and e.position.POS_ID=:posid")
+
 })
 public class Employee implements Serializable {
 
