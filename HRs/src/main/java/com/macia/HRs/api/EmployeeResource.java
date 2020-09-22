@@ -124,15 +124,15 @@ public class EmployeeResource {
             throws ResourceNotFoundException {
         return ResponseEntity.ok().body(employeeRepository.findByEmployeeCode(empcode));
     }
-    
+  
     /*==================== Get EMP details Via PROC by firstname=====================*/
     @CrossOrigin(origins = "*")
+
     @GetMapping("/find/fname/{fname}")
-    @CrossOrigin("*")
     @ResponseBody
     public List<Employee> findEmployeeByFirstName(@PathVariable(value = "fname") String fname)
             throws ResourceNotFoundException {
-        return employeeService.findAllEmpViaProcByFirstName(fname);
+        return employeeService.findEmployeeByFirstName(fname);
     }
 
     @PostMapping("/create/dept/{deptid}")
