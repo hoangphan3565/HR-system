@@ -23,6 +23,7 @@ public class PositionResource {
     private PositionService posService;
 
     @GetMapping()
+    @ResponseBody
     @CrossOrigin("*")
     public List<Position> getAllPosition(){
         return posService.findAllAvailable();
@@ -50,6 +51,7 @@ public class PositionResource {
     }
 
     @GetMapping("/{id}")
+    @ResponseBody
     @CrossOrigin("*")
     public ResponseEntity<Position> getPositionById(@PathVariable(value = "id") Integer PositionId)
             throws ResourceNotFoundException {
@@ -62,12 +64,16 @@ public class PositionResource {
 
 
     @PostMapping()
+    @ResponseBody
     @CrossOrigin("*")
     public Position createPosition(@RequestBody Position Position) {
         return PositionRepository.save(Position);
     }
 
+
     @PutMapping("/{id}/uid/{uid}")
+    @CrossOrigin("*")
+    @ResponseBody
     public ResponseEntity<Position> updatePosition(
             @PathVariable(value = "id") Integer PositionId,
             @PathVariable(value = "uid") Integer uid,
