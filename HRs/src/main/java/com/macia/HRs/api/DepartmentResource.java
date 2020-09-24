@@ -38,8 +38,7 @@ public class DepartmentResource {
     @DeleteMapping("/{id}/uid/{uid}")
     @CrossOrigin("*")
     public Map<String, Boolean> deleteDepartment(@PathVariable(value = "id") Integer departmentId,@PathVariable(value = "uid") Integer uid) throws Exception {
-        Department department =
-                departmentRepository
+        Department department = departmentRepository
                         .findById(departmentId)
                         .orElseThrow(() -> new ResourceNotFoundException("Department not found on :: " + departmentId));
         department.setIsdeleted(Boolean.TRUE);
@@ -54,8 +53,7 @@ public class DepartmentResource {
     @CrossOrigin("*")
     public ResponseEntity<Department> getDepartmentById(@PathVariable(value = "id") Integer departmentId)
             throws ResourceNotFoundException {
-        Department department =
-                departmentRepository
+        Department department = departmentRepository
                         .findById(departmentId)
                         .orElseThrow(() -> new ResourceNotFoundException("Department not found on :: " + departmentId));
         return ResponseEntity.ok().body(department);
@@ -74,8 +72,7 @@ public class DepartmentResource {
             @PathVariable(value = "uid") Integer uid,
             @RequestBody Department departmentDetails)
             throws ResourceNotFoundException {
-        Department department =
-                departmentRepository
+        Department department = departmentRepository
                         .findById(departmentId)
                         .orElseThrow(() -> new ResourceNotFoundException("Department not found on :: " + departmentId));
         department.setDepartmentName(departmentDetails.getDepartmentName());

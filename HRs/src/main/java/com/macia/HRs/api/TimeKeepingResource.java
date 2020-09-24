@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +42,13 @@ public class TimeKeepingResource {
         return "Everything has been synchronized!";
     }
 
+    @GetMapping("/{id}")
+    @CrossOrigin("*")
+    @ResponseBody
+    public TimeKeeping getTimeKeepingById(@PathVariable(value = "id") Integer id){
+        return tkpRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("TimeKeeping not found on :: " + id));
+    }
+
     @GetMapping("/date/{date}/dept/{depid}")
     @CrossOrigin("*")
     @ResponseBody
@@ -58,8 +68,7 @@ public class TimeKeepingResource {
     @DeleteMapping("/{id}/uid/{uid}")
     @CrossOrigin("*")
     public Map<String, Boolean> deleteTimeKeeping(@PathVariable(value = "id") Integer timekeepingId,@PathVariable(value = "uid") Integer uid) throws Exception {
-        TimeKeeping timeKeeping =
-                tkpRepo
+        TimeKeeping timeKeeping = tkpRepo
                         .findById(timekeepingId)
                         .orElseThrow(() -> new ResourceNotFoundException("TimeKeeping not found on :: " + timekeepingId));
         timeKeeping.setIsDeleted(Boolean.TRUE);
@@ -70,21 +79,24 @@ public class TimeKeepingResource {
         return response;
     }
 
-    @PutMapping("/{id}/uid/{uid}")
+    @PutMapping("/{id}/updatetime/{time}/uid/{uid}")
     @ResponseBody
     @CrossOrigin("*")
-    public ResponseEntity<TimeKeeping> updateTimeKeeping(
+    public Map<String, Boolean> updateTimeKeeping(
             @PathVariable(value = "id") Integer timekeepingId,
-            @PathVariable(value = "uid") Integer uid,
-            @RequestBody TimeKeeping timeKeepingDetails)
+            @PathVariable(value = "time") String time,
+            @PathVariable(value = "uid") Integer uid)
             throws ResourceNotFoundException {
-        TimeKeeping timeKeeping =
-                tkpRepo
+        TimeKeeping timeKeeping = tkpRepo
                         .findById(timekeepingId)
                         .orElseThrow(() -> new ResourceNotFoundException("TimeKeeping not found on :: " + timekeepingId));
-        timeKeeping.setDateTime(timeKeepingDetails.getDateTime());
+        LocalDate dateoftkp = timeKeeping.getDateTime().toLocalDate();
+        LocalDateTime updateddatimetkp = dateoftkp.atTime(LocalTime.parse(time));
+        timeKeeping.setDateTime(updateddatimetkp);
         timeKeeping.setModifyBy(uid);
-        final TimeKeeping updatedTimeKeeping = tkpRepo.save(timeKeeping);
-        return ResponseEntity.ok(updatedTimeKeeping);
+        tkpRepo.save(timeKeeping);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("updated", Boolean.TRUE);
+        return response;
     }
 }
