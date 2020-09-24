@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TimeKeepingDTO {
     private Integer tkp_id;
+    private String employee_code;
     private String fullname;
+    private Integer dep_id;
     private String checktime;
     private String shift_name;
     private String type;

@@ -57,7 +57,9 @@ import java.time.LocalDateTime;
                     @ConstructorResult(targetClass = TimeKeepingDTO.class,
                         columns = {
                             @ColumnResult(name="tkp_id",type = Integer.class),
+                            @ColumnResult(name="employee_code", type = String.class),
                             @ColumnResult(name="fullname", type = String.class),
+                            @ColumnResult(name="dep_id", type = Integer.class),
                             @ColumnResult(name="checktime",type = String.class),
                             @ColumnResult(name="shift_name",type = String.class),
                             @ColumnResult(name="type",type = String.class)
