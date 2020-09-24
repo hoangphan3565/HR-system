@@ -85,4 +85,43 @@ public class EmployeeService {
         query.setParameter("posid",posid);
         return query.getResultList();
     }
+
+    public List<Employee> getEmloyeeBySchkey(String schkey) {
+        Query query =  em.createNamedQuery("employee_findAllEmployeeByCode", Employee.class);
+        query.setParameter("code",schkey);
+        if(query.getResultList().size()>0){
+            return query.getResultList();
+        }
+        Query query2 =  em.createNamedQuery("employee_findAllEmployeeByFirstName", Employee.class);
+        query2.setParameter("firstname",schkey);
+        return query2.getResultList();
+    }
+
+    public List<Employee> getEmloyeeBySchkeyAndPosition(String schkey,int posid){
+        Query query =  em.createNamedQuery("employee_findAllEmployeeByCodeAndPos", Employee.class);
+        query.setParameter("code",schkey);
+        query.setParameter("posid",posid);
+        if(query.getResultList().size()>0){
+            return query.getResultList();
+        }
+        Query query2 =  em.createNamedQuery("employee_findAllEmployeeByFnameAndPos", Employee.class);
+        query2.setParameter("fname",schkey);
+        query2.setParameter("posid",posid);
+        return query2.getResultList();
+    }
+
+
+//    public List<Employee> getEmloyeeBySchkeyAndDepartment(String schkey,int deptid){
+//        Query query =  em.createNamedQuery("employee_findAllEmployeeBySchkeyAndDep", Employee.class);
+//        query.setParameter("schkey",schkey);
+//        query.setParameter("deptid",deptid);
+//        return query.getResultList();
+//    }
+//    public List<Employee> getEmloyeeBySchkeyAndDepartmentAndPosition(String schkey,int deptid,int posid){
+//        Query query =  em.createNamedQuery("employee_findAllEmployeeBySchkeyAndDepAndPos", Employee.class);
+//        query.setParameter("schkey",schkey);
+//        query.setParameter("deptid",deptid);
+//        query.setParameter("posid",posid);
+//        return query.getResultList();
+//    }
 }

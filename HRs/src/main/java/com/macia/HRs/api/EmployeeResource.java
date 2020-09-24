@@ -79,9 +79,7 @@ public class EmployeeResource {
         response.put("deleted Employee Name: "+employee.getFullName(), Boolean.TRUE);
         return response;
     }
-
-
-
+    
     @GetMapping("/dept/{deptid}")
     @CrossOrigin("*")
     @ResponseBody
@@ -214,5 +212,36 @@ public class EmployeeResource {
     public ResponseEntity<List<Employee>> getEmployeeByfnameAndDeptAndPos(@PathVariable(value = "fname") String fname,@PathVariable(value = "deptid") Integer deptid,@PathVariable(value = "posid") Integer posid){
         return ResponseEntity.ok().body(employeeService.getEmloyeeByFnameAndDepartmentAndPosition(fname, deptid, posid));
     }
+
+
+    /*===== Using Searchkey =====*/
+    @GetMapping("/find/schkey/{schkey}")
+    @CrossOrigin("*")
+    @ResponseBody
+    public ResponseEntity<List<Employee>> getEmployeeBySchkey(@PathVariable(value = "schkey") String schkey){
+        return ResponseEntity.ok().body(employeeService.getEmloyeeBySchkey(schkey));
+    }
+
+    @GetMapping("/find/schkey/{schkey}/pos/{posid}")
+    @CrossOrigin("*")
+    @ResponseBody
+    public ResponseEntity<List<Employee>> getEmployeeBySchkeyAndPosId(@PathVariable(value = "schkey") String schkey,@PathVariable(value = "posid") Integer posid){
+        return ResponseEntity.ok().body(employeeService.getEmloyeeBySchkeyAndPosition(schkey,posid));
+    }
+
+//    @GetMapping("/find/schkey/{schkey}/dept/{deptid}")
+//    @CrossOrigin("*")
+//    @ResponseBody
+//    public ResponseEntity<List<Employee>> getEmployeeBySchkeyAndDept(@PathVariable(value = "schkey") String schkey,@PathVariable(value = "deptid") Integer deptid){
+//        return ResponseEntity.ok().body(employeeService.getEmloyeeBySchkeyAndDepartment(schkey,deptid));
+//    }
+//
+//    @GetMapping("/find/schkey/{schkey}/dept/{deptid}/pos/{posid}")
+//    @CrossOrigin("*")
+//    @ResponseBody
+//    public ResponseEntity<List<Employee>> getEmployeeBySchkeyAndDeptAndPos(@PathVariable(value = "schkey") String schkey,@PathVariable(value = "deptid") Integer deptid,@PathVariable(value = "posid") Integer posid){
+//        return ResponseEntity.ok().body(employeeService.getEmloyeeBySchkeyAndDepartmentAndPosition(schkey, deptid, posid));
+//    }
+    
     /*[End]==========================---Multiple Search---==========================*/
 }
