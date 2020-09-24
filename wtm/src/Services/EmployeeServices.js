@@ -11,6 +11,9 @@ const findByDeptAndPos=(a,b)=>Api.get(`${Api.url.employees}/find/dept/${a}/pos/$
 const findByCodeAndPos=(a,b)=>Api.get(`${Api.url.employees}/find/code/${a}/pos/${b}`)
 const findByCodeAndDept=(a,b)=>Api.get(`${Api.url.employees}/find/code/${a}/dept/${b}`)
 const findByCodeAndDeptAndPos=(a,b,c)=>Api.get(`${Api.url.employees}/find/code/${a}/dept/${b}/pos/${c}`)
+const findByFnameAndPos=(a,b)=>Api.get(`${Api.url.employees}/find/fname/${a}/pos/${b}`)
+const findByFnameAndDept=(a,b)=>Api.get(`${Api.url.employees}/find/fname/${a}/dept/${b}`)
+const findByFnameAndDeptAndPos=(a,b,c)=>Api.get(`${Api.url.employees}/find/fname/${a}/dept/${b}/pos/${c}`)
 export default{
     list:list,
     clear:clear,
@@ -23,5 +26,8 @@ export default{
     findByDeptAndPos:findByDeptAndPos,
     findByCodeAndDept:findByCodeAndDept,
     findByCodeAndPos:findByCodeAndPos,
-    findByCodeAndDeptAndPos:findByCodeAndDeptAndPos
+    findByCodeAndDeptAndPos:findByCodeAndDeptAndPos,
+    findByFnameAndPos:findByFnameAndPos,
+    findByFnameAndDept:findByFnameAndDept,
+    findByFnameAndDeptAndPos:findByFnameAndDeptAndPos
 }

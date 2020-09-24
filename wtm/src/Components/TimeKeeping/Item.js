@@ -1,22 +1,60 @@
 import React from 'react';
-import { Tag, Tooltip, Button, Modal, Form,Select,TimePicker,notification} from 'antd';
+import { Tag, Tooltip, Button, Modal, Form, Select, TimePicker, notification, Pagination, message } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import moment from 'moment';
+import TimeIn from './TimeIn';
+import TimeOut from './TImeOut';
 const Item = (props) => {
-    const layout = {
-        labelCol: { span: 6 },
-        wrapperCol: { span: 18 },
-    };
-    const { Option } = Select;
+    console.log(props.e);
     const [visible, setVisible] = useState(false);
+    const checkType = props.e.type.split(' ');
+
+    const checkTime = props.e.checktime.split(' ');
+    const testt = props.e.tkp_id.toString();
+    const testtt = testt.split(' ');
+    const checkTimeIn = [];
+    const checkTimeOut = [];
+    const [message, setMessage] = useState("");
+    const callback = (a) => {
+        setMessage(a);
+    }
+    //console.log(message);
+    if (message !== "") {
+        props.call("");
+        props.call("ddd");
+        setMessage("");
+    }
+
+
+    for (var i = 0; i < checkType.length; i++) {
+        if (checkType[i] === 'in') {
+            checkTimeIn.push(checkTime[i] + " " + testtt[i]);
+        }
+    }
+    for (var i = 0; i < checkType.length; i++) {
+        if (checkType[i] ==='out') {
+            checkTimeOut.push(checkTime[i] + " " + testtt[i]);
+        }
+    }
+    const listTimeIn = checkTimeIn.map((e) => {
+        return (
+            <TimeIn e={e} callback={callback} />
+        );
+    })
+    const listTimeOut = checkTimeOut.map((e) => {
+        return (
+            <TimeOut e={e} callback={callback} />
+        );
+    })
     const toggleVisible = () => {
         visible === false ? setVisible(true) : setVisible(false);
     }
+    const format = 'HH:mm';
     const toggleCancel = () => {
         setVisible(false);
     }
-    const excuteEdit=()=>{
+    const excuteEdit = () => {
         setVisible(false);
         const args = {
             message: 'Updated Successfully',
@@ -26,82 +64,41 @@ const Item = (props) => {
         };
         notification.open(args);
     }
-    const checkTimeIn = (a) => {
-        if (a !== "") {
-            {
-                return (
-                    <Tag color="magenta">{a}</Tag>
-                );
-            }
-        }
-        else {
-            return (
-                <Tag color="warning">Absent</Tag>
-            );
-        }
-    }
 
-    const checkTimeOut = (a) => {
-        if (a !== "") {
-            {
-                return (
-                    <Tag color="processing">{a}</Tag>
-                );
-            }
-        }
-        else {
-            return (
-                <Tag color="warning">Absent</Tag>
-            );
-        }
-    }
+    const layout = {
+        labelCol: { span: 6 },
+        wrapperCol: { span: 18 },
+    };
+    const { Option } = Select;
+    const color = ["magenta", "purple", "red", "volcano", "orange", "gold", "lime", "green", "cyan", "blue", "geekblue"];
     const makeColor = (a) => {
-        if (a === 1) {
-            return (
-                <Tag color="orange">
-                    CA1
-                </Tag>
-            );
-        }
-        if (a === 2) {
-            return (
-                <Tag color="geekblue">
-                    CA2
-                </Tag>
-            );
-        }
-        if (a === 3) {
-            return (
-                <Tag color="lime">
-                    CA3
-                </Tag>
-            );
+        for (let i = 0; i < color.length; i++) {
+            if (a === i) {
+                return (
+                    <Tooltip title="Inside">
+                        <Tag color={color[i]}>D{i}</Tag>
+                    </Tooltip>
+
+                )
+            }
         }
     }
-
-    const format = 'HH:mm';
     return (
         <tr>
-            <td>{props.e.key}</td>
-            <td>{props.e.id}</td>
-            <td>{props.e.fullName}</td>
-            <td>{props.e.department}</td>
+            <td></td>
+            <td>{props.e.employee_code}</td>
+            <td>{props.e.fullname}</td>
+            <td>{makeColor(props.e.dep_id)}</td>
+            <td>{props.e.shift_name}</td>
             <td>
+
                 {
-                    makeColor(props.e.workingShift)
+                    listTimeIn
                 }
-            </td>
-            <td>
-                <Tooltip title="Inside">
-                    {
-                        checkTimeIn(props.e.in)
-                    }
-                </Tooltip>
-                <Tooltip>
-                    {
-                        checkTimeOut(props.e.out)
-                    }
-                </Tooltip>
+                {
+                    listTimeOut
+                }
+
             </td>
             <td>
                 <Tooltip placement="topLeft" title="Edit!">
@@ -124,7 +121,7 @@ const Item = (props) => {
                                 <TimePicker
                                     defaultValue={moment('12:08', format)}
                                     format={format}
-                                    style={{width:350}}
+                                    style={{ width: 350 }}
                                 />
                             </Form.Item>
 
@@ -132,7 +129,7 @@ const Item = (props) => {
                                 <TimePicker
                                     defaultValue={moment('12:08', format)}
                                     format={format}
-                                    style={{width:350}}
+                                    style={{ width: 350 }}
                                 />
                             </Form.Item>
                         </Form>

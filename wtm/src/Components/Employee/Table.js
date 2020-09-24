@@ -20,10 +20,9 @@ const Table = (props) => {
     const [searching, setSearching] = useState("");
     const [posing, setPosing] = useState("");
     const [depting, setDepting] = useState("");
-
+    const [currentPage, setCurrentPage] = useState(1);
     const [employees, setEmployees] = useState([]);
     const [temp, setTemp] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
     const [perPage, setPerPage] = useState(10);
     const [dept, setDept] = useState([]);
     const [pos, setPos] = useState([]);
@@ -47,10 +46,10 @@ const Table = (props) => {
         PositionService.list().then(res => {
             setPos(res.data);
         })
-        EmployeeServices.list().then(res=>{
+        EmployeeServices.list().then(res => {
             setTemp(res.data)
         })
-    },[])
+    }, [])
     const deptOptions = [];
     for (let i = 0; i < dept.length; i++) {
         deptOptions.push(dept[i].dep_ID)
@@ -66,42 +65,91 @@ const Table = (props) => {
         if (depting && posing && searching === "") {
             EmployeeServices.findByDeptAndPos(depting, posing).then(res => { setEmployees(res.data) })
         }
-        if(depting==="" && posing && searching===""){
-            EmployeeServices.findByPos(posing).then(res => { setEmployees(res.data) })  
+        if (depting === "" && posing && searching === "") {
+            EmployeeServices.findByPos(posing).then(res => { setEmployees(res.data) })
         }
-    }, [searching,posing,depting,link]);
-    useEffect(()=>{
+    }, [searching, posing, depting, link]);
+    useEffect(() => {
         EmployeeServices.list(link).then(res => { setEmployees(res.data); });
-    },[link])
+    }, [link])
     useEffect(() => {
         if (posing && depting) {
             EmployeeServices.findByCodeAndDeptAndPos(searching, depting, posing).then(res => {
-                setEmployees(res.data)
-            })
+                if (res.data) {
+                    setEmployees(res.data)
+                }
+                else {
+                    setEmployees([]);
+                }
+            });
+
+            EmployeeServices.findByFnameAndDeptAndPos(searching, depting, posing).then(res => {
+                if (res.data) {
+                    setEmployees(res.data)
+                }
+                else {
+                    setEmployees([]);
+                }
+            });
         }
         if (posing == "" && depting) {
             EmployeeServices.findByCodeAndDept(searching, depting).then(res => {
-                setEmployees(res.data);
+                if (res.data) {
+                    setEmployees(res.data)
+                }
+                else {
+                    setEmployees([]);
+                }
             })
+
+            EmployeeServices.findByFnameAndDept(searching, depting).then(res => {
+                if (res.data) {
+                    setEmployees(res.data)
+                }
+                else {
+                    setEmployees([]);
+                }
+            });
         }
-        if (posing && depting=="") {
-            EmployeeServices.findByCodeAndPos(searching,posing).then(res => {
-                setEmployees(res.data);
-            })
+        if (posing && depting == "") {
+            EmployeeServices.findByCodeAndPos(searching, posing).then(res => {
+                if (res.data) {
+                    setEmployees(res.data)
+                }
+                else {
+                    setEmployees([]);
+                }
+            });
+
+            EmployeeServices.findByFnameAndPos(searching, posing).then(res => {
+                if (res.data) {
+                    setEmployees(res.data)
+                }
+                else {
+                    setEmployees([]);
+                }
+            });
         }
         if (posing === "" && depting === "" && search) {
-            const test1 = [];
-            for (var i = 0; i < temp.length; i++) {
-                var fla = 0;
-                if (searching === temp[i].employeeCode) {
-                    EmployeeServices.findByCode(searching).then(res => { test1.push(res.data); setEmployees(test1); });
-                    fla = 1;
-                    break;
+
+            EmployeeServices.findByCode(searching).then(res => {
+                if (res.data) {
+                    setEmployees(res.data)
                 }
-            }
-            if (fla === 0) {
-                EmployeeServices.findByFname(searching).then(res => { setEmployees(res.data) });
-            }
+                else {
+                    setEmployees([]);
+                }
+            });
+
+
+            EmployeeServices.findByFname(searching).then(res => {
+                if (res.data) {
+                    setEmployees(res.data)
+                }
+                else {
+                    setEmployees([]);
+                }
+            });
         }
     }, [searching])
     //chọn dept nhận pos
@@ -111,13 +159,34 @@ const Table = (props) => {
         }
         if (posing && searching !== "") {
             EmployeeServices.findByCodeAndDeptAndPos(searching, depting, posing).then(res => {
-                setEmployees(res.data)
+                if (res.data) {
+                    setEmployees(res.data)
+                }
+                else {
+                    setEmployees([]);
+                }
             })
+            EmployeeServices.findByFnameAndDeptAndPos(searching, depting, posing).then(res => {
+                if (res.data) {
+                    setEmployees(res.data)
+                }
+                else {
+                    setEmployees([]);
+                }
+            });
         }
         if (posing === "" && searching !== "") {
             EmployeeServices.findByCodeAndDept(searching, depting).then(res => {
-                setEmployees(res.data)
+                if (res.data) {
+                    setEmployees(res.data)
+                }
             })
+
+            EmployeeServices.findByFnameAndDept(searching, depting).then(res => {
+                if (res.data) {
+                    setEmployees(res.data)
+                }
+            });
         }
         if (posing === "" && searching === "") {
             EmployeeServices.findByDept(depting).then(res => { setEmployees(res.data) })
@@ -132,13 +201,64 @@ const Table = (props) => {
             EmployeeServices.findByDeptAndPos(depting, posing).then(res => { setEmployees(res.data) })
         }
         if (depting && searching !== "") {
-            EmployeeServices.findByCodeAndDeptAndPos(searching, depting, posing).then(res => { setEmployees(res.data) })
+            EmployeeServices.findByCodeAndDeptAndPos(searching, depting, posing).then(res => {
+                if (res.data) {
+                    setEmployees(res.data)
+                }
+                else {
+                    setEmployees([]);
+                }
+            })
+
+            EmployeeServices.findByFnameAndDeptAndPos(searching, depting, posing).then(res => {
+                if (res.data) {
+                    setEmployees(res.data)
+                }
+                else {
+                    setEmployees([]);
+                }
+            });
         }
         if (depting === "" && search !== "") {
-            EmployeeServices.findByCodeAndPos(searching, posing).then(res => { setEmployees(res.data) })
+            EmployeeServices.findByCodeAndPos(searching, posing).then(res => {
+                if (res.data) {
+                    setEmployees(res.data)
+                }
+                else {
+                    setEmployees([]);
+                }
+            })
+
+            EmployeeServices.findByFnameAndPos(searching, posing).then(res => {
+                if (res.data.length) {
+                    setEmployees(res.data)
+                }
+                else {
+                    setEmployees([]);
+                }
+            });
         }
         if (depting === "" && searching === "") {
             EmployeeServices.findByPos(posing).then(res => { setEmployees(res.data) })
+        }
+        if (depting && searching && posing === "") {
+            console.log(1);
+            EmployeeServices.findByCodeAndDept(searching, depting).then(res => {
+                if (res.data) {
+                    setEmployees(res.data)
+                }
+                else {
+                    setEmployees([]);
+                }
+            });
+            EmployeeServices.findByFnameAndDept(searching,depting).then(res=>{
+                if (res.data) {
+                    setEmployees(res.data)
+                }
+                else {
+                    setEmployees([]);
+                }
+            })
         }
     }, [posing])
 
@@ -182,8 +302,8 @@ const Table = (props) => {
             "firstName": firstName.current.props.value,
             "lastName": lastName.current.props.value,
             "startdate": startDate.current.props.value._i,
-            "createby":1,
-            "isdeleted":false
+            "createby": 1,
+            "isdeleted": false
         }
         const args = {
             message: 'Created Successfully',
@@ -191,11 +311,11 @@ const Table = (props) => {
                 'An new employee was added in Your System !',
             duration: 1,
         };
-        EmployeeServices.add(department.current.props.value,position.current.props.value,employee).then(res=>{
+        EmployeeServices.add(department.current.props.value, position.current.props.value, employee).then(res => {
             setAddModal(false);
             setLink("1");
             setLink("")
-        },notification.success(args))
+        }, notification.success(args))
 
     }
     const getEmployeeByCodeAndFname = (a) => {
@@ -360,7 +480,7 @@ const Table = (props) => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {employee.length!==0?employee:<Empty />}
+                                    {employee.length !== 0 ? employee : <Empty />}
                                 </tbody>
                             </table>
                             <Pagination

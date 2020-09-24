@@ -1,4 +1,5 @@
-import React from "react";
+import React,{useRef,useState} from "react";
+import Cookies from 'js-cookie';
 import {
   Form,
   Input,
@@ -14,6 +15,9 @@ import {
 import "antd/dist/antd.css";
 import "./css/index.css";
 import "../Image/LimitedPhysicalEnglishsetter-small.gif";
+import UserService from "../../Services/UserService";
+import { Redirect,history } from "react-router-dom";
+import axios from 'axios'
 const Index = (props) => {
   const layout = {
     labelCol: { span: 6 },
@@ -22,9 +26,28 @@ const Index = (props) => {
   const tailLayout = {
     wrapperCol: { offset: 6, span: 18 },
   };
+  const [message,setMessage]=useState("");
+  const userName=useRef();
+  const passWord=useRef();
   const { Text} = Typography;
+  const  onLogin=()=>{
+    const account={
+      username:userName.current.props.value,
+      password:passWord.current.props.value
+    }
+    axios.post("https://www.saigontech.edu.vn/restful-api/login",account).then(res=>{
+     if(res.data.errorCode>0){
+
+     }
+     else{
+       Cookies.set('loginInfo',JSON.stringify(res.data.data))
+       props.history.push("/home");
+     }
+    })
+  }
   return (
     <div className="container">
+      <h5>{message}</h5>
       <div className="login">
         <Row className="header">
           <Col flex={1}></Col>
@@ -46,27 +69,27 @@ const Index = (props) => {
             
             </Col>
             <Col flex={3}>
-              <Form {...layout}>
+              <Form {...layout} onFinish={onLogin}>
                 <Form.Item
                   label="Username"
                   name="username"
                   rules={[{ required: true }]}
                 >
-                  <Input placeholder="Input your username" />
+                  <Input placeholder="Input your username" ref={userName}/>
                 </Form.Item>
                 <Form.Item
                   label="Password"
                   name="password"
                   rules={[{ required: true }]}
                 >
-                  <Input.Password placeholder="Input your password" />
+                  <Input.Password placeholder="Input your password" ref={passWord}/>
                 </Form.Item>
                 <Form.Item {...tailLayout}>
                   <Tooltip placement="topLeft" title="Remember me,plz!">
                   <Checkbox>Remember me</Checkbox>
                   </Tooltip>
                   <Tooltip placement="topLeft" title="Login Here !">
-                    <Button htmlType="submit" type="primary" id="btnlogin">
+                    <Button htmlType="submit" type="primary" id="btnlogin" onClick={onLogin}>
                       Login
                     </Button>
                   </Tooltip>

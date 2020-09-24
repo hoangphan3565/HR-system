@@ -105,8 +105,8 @@ const MenuBar = (props) => {
               <SubMenu key="sub2" icon={<CalendarOutlined />} title="Date">
                 <Menu.Item key="7" icon={<CalendarOutlined />}><Link to="/holidays" >Holidays</Link></Menu.Item>
                 <Menu.Item key="10" icon={<CalendarOutlined />}><Link to="/timekeepings" >TimeKeeping</Link></Menu.Item>
-                <Menu.Item key="8" icon={<SplitCellsOutlined />} >Leave</Menu.Item>
-                <Menu.Item key="9" icon={<ContactsOutlined />}>Attandance</Menu.Item>
+                <Menu.Item key="8" icon={<SplitCellsOutlined />} >Shift</Menu.Item>
+                <Menu.Item key="9" icon={<ContactsOutlined />}>Daily-Schedule</Menu.Item>
               </SubMenu>
               <SubMenu key="sub1" icon={<AppstoreOutlined />} title="Infomations">
                 <Menu.Item key="3" icon={<TeamOutlined />}>
