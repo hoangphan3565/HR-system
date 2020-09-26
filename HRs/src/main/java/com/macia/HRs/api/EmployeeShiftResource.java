@@ -26,12 +26,28 @@ public class EmployeeShiftResource {
 
     @GetMapping()
     @CrossOrigin("*")
+    @ResponseBody
     public List<Employee_Shift> getAllEmployee_Shift(){
         return emsService.findAllAvailable();
     }
 
+    @GetMapping("/find/dept/{id}")
+    @CrossOrigin("*")
+    @ResponseBody
+    public List<Employee_Shift> getByDepId(@PathVariable(value = "id") Integer id){
+        return emsService.findByDepID(id);
+    }
+
+    @GetMapping("/find/employee/{code}")
+    @CrossOrigin("*")
+    @ResponseBody
+    public List<Employee_Shift> findByEmpCode(@PathVariable(value = "code") String code){
+        return emsService.findByEmpCode(code);
+    }
+
     @DeleteMapping("/{id}/uid/{uid}")
     @CrossOrigin("*")
+    @ResponseBody
     public Map<String, Boolean> deleteEmployee_Shift(@PathVariable(value = "id") Integer Employee_ShiftId,@PathVariable(value = "uid") Integer uid) throws Exception {
         Employee_Shift emps =
                 emsRepo

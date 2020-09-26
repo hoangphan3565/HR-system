@@ -21,6 +21,10 @@ import java.time.LocalDateTime;
 @NamedQueries({
         @NamedQuery(name = "employeeshift_findAllAvailable",
                 query = "SELECT es FROM Employee_Shift es where es.isdeleted=false"),
+        @NamedQuery(name = "employeeshift_findByDepId",
+                query = "from Employee_Shift es where es.employee.department.DEP_ID=:depid"),
+        @NamedQuery(name = "employeeshift_findByEmpCode",
+                query = "from Employee_Shift es where LOWER(es.employee.employeeCode) like '%' || LOWER(:empcode) ||'%'"),
 })
 public class Employee_Shift implements Serializable {
 
