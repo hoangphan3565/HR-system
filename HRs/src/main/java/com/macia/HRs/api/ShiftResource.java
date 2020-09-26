@@ -1,5 +1,6 @@
 package com.macia.HRs.api;
 
+import com.macia.HRs.entity.Position;
 import com.macia.HRs.entity.Shift;
 import com.macia.HRs.repository.ShiftRepository;
 import com.macia.HRs.service.ShiftService;
@@ -27,6 +28,14 @@ public class ShiftResource {
     @ResponseBody
     public List<Shift> getAllShift(){
         return shiftService.findAllAvailable();
+    }
+        
+
+    @GetMapping("/find/{name}")
+    @CrossOrigin("*")
+    @ResponseBody
+    public List<Shift> getAllLikeName(@PathVariable(value = "name") String name){
+        return shiftService.findAllLikeName(name);
     }
 
     @GetMapping("/{id}")

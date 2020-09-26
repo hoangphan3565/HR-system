@@ -32,12 +32,12 @@ public class EmployeeService {
     //Using Maned Query
     public List<Employee> findEmployeeByFirstName(String fistname){
         Query query =  em.createNamedQuery("employee_findAllEmployeeByFirstName", Employee.class);
-        query.setParameter("firstname", fistname.toLowerCase());
+        query.setParameter("firstname", fistname);
         return query.getResultList();
     }
     public List<Employee> findEmployeeByCode(String code){
         Query query =  em.createNamedQuery("employee_findAllEmployeeByCode", Employee.class);
-        query.setParameter("code", code.toLowerCase());
+        query.setParameter("code", code);
         return query.getResultList();
     }
     public List<Employee> getEmloyeeByDepartmentAndPosition(int deptid,int posid){

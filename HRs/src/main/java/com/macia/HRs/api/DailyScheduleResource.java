@@ -28,6 +28,12 @@ public class DailyScheduleResource {
         return dlsService.findAllAvailable();
     }
 
+    @GetMapping("/find/{name}")
+    @CrossOrigin("*")
+    public List<Daily_Schedule> getAllDailyScheduleLikeName(@PathVariable(value = "name") String name){
+        return dlsService.findAllLikeName(name);
+    }
+
     @GetMapping("/count")
     @CrossOrigin("*")
     public Long count() {

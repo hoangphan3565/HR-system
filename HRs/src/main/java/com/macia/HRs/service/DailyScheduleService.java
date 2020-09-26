@@ -22,4 +22,10 @@ public class DailyScheduleService {
         Query query = em.createNamedQuery("dailyschedule_findAllAvailable", Daily_Schedule.class);
         return query.getResultList();
     }
+    //dailyschedule_findAllLikeName
+    public List<Daily_Schedule> findAllLikeName(String name) {
+        Query query = em.createNamedQuery("dailyschedule_findAllLikeName", Daily_Schedule.class);
+        query.setParameter("name", name);
+        return query.getResultList();
+    }
 }
