@@ -1,5 +1,6 @@
 package com.macia.HRs.service;
 
+import com.macia.HRs.entity.Position;
 import com.macia.HRs.entity.Shift;
 import com.macia.HRs.repository.PositionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,11 @@ public class ShiftService {
 
     public List<Shift> findAllAvailable() {
         Query query = em.createNamedQuery("shift_findAllAvailable", Shift.class);
+        return query.getResultList();
+    }
+    public List<Shift> findAllLikeName(String shiftname) {
+        Query query = em.createNamedQuery("shift_findAllLikeName", Shift.class);
+        query.setParameter("shiftname", shiftname);
         return query.getResultList();
     }
 }

@@ -22,6 +22,8 @@ import java.util.List;
                 query = "SELECT e FROM Shift e"),
         @NamedQuery(name = "shift_findAllAvailable",
                 query = "SELECT e FROM Shift e where e.isDeleted=false "),
+        @NamedQuery(name = "shift_findAllLikeName",
+                query = "from Shift e where LOWER(e.shiftName) like '%' || LOWER(:shiftname) ||'%' and e.isDeleted=false")
 })
 public class Shift implements Serializable {
 
