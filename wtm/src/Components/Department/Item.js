@@ -1,17 +1,18 @@
-import React,{useRef,useEffect} from 'react';
-import {Tooltip, Button, Modal, Form, Input, Select, DatePicker, Popconfirm, Statistic, Card,notification } from 'antd';
+import React, { useRef, useEffect } from 'react';
+import { Tooltip, Button, Modal, Form, Input, Select, DatePicker, Popconfirm, Statistic, Card, notification } from 'antd';
 import { EditOutlined, UsergroupDeleteOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import { UserOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import DepartmentService from '../../Services/DepartmentService';
+import UserActivityService from '../../Services/UserActivityService';
 const Item = (props) => {
     const { Search } = Input;
     const [form] = Form.useForm();
     const [visible, setVisible] = useState(false);
     const [updateVisible, setUpdateVisible] = useState(false);
-    const [startDate,setStartDate]=useState();
-    const departmentName=useRef();
+    const [startDate, setStartDate] = useState();
+    const departmentName = useRef();
     const startDate1 = useRef();
     const layout = {
         labelCol: { span: 6 },
@@ -32,38 +33,59 @@ const Item = (props) => {
         setUpdateVisible(false);
     }
     const onFinish = () => {
-       const department={
-           "departmentName":departmentName.current.props.value,
-           "startDate":startDate1.current.props.value._i
-       }
+        const department = {
+            "departmentName": departmentName.current.props.value,
+            "startDate": startDate1.current.props.value._i
+        }
         const args = {
             message: 'Updated Successfully',
             description:
                 'This department was updated in Your System !',
             duration: 1,
         };
-        DepartmentService.update(props.e.dep_ID,1,department).then(res=>{ setUpdateVisible(false);
-            props.test("");
-            props.test(1)},notification.success(args));
+        const actvity = {
+            "usr_ID": 1,
+            "activityName": `Updated department with name ${props.e.departmentName}`,
+            "isdeleted": false,
+        }
+        DepartmentService.update(props.e.dep_ID, 1, department).then(res => {
+            setUpdateVisible(false);
+            if (res.status === 200) {
+                props.test("");
+                props.test(1);
+                UserActivityService.add(actvity).then();
+                notification.success(args)
+            }
+        });
     }
     const handleDatePickerChange = (date, dateString) => {
         setStartDate(dateString);
     }
     useEffect(() => {
         form.setFieldsValue({
-           deptName:props.e.departmentName
+            deptName: props.e.departmentName
         });
-    },)
-    const onDelete=()=>{
+    })
+    const onDelete = () => {
         const args = {
             message: 'Deleted Successfully',
             description:
                 'This department was deleted in Your System !',
             duration: 1,
         };
-        DepartmentService.clear(props.e.dep_ID,1).then(res=>{
-            props.test(1);props.test("")
-        },notification.success(args))
+        const actvity = {
+            "usr_ID": 1,
+            "activityName": `Deleted department with name ${props.e.departmentName}`,
+            "isdeleted": false,
+        }
+        DepartmentService.clear(props.e.dep_ID, 1).then(res => {
+            if (res.status === 200) {
+                props.test(1);
+                props.test("");
+                UserActivityService.add(actvity).then();
+                notification.success(args);
+            }
+        })
     };
     return (
         <tr key={props.e.id}>
@@ -97,24 +119,24 @@ const Item = (props) => {
                                 name="deptName"
                                 rules={[{ required: true }]}
                                 hasFeedback>
-                                <Input size="middle" ref={departmentName}/>
+                                <Input size="middle" ref={departmentName} />
                             </Form.Item>
                             <Form.Item
                                 label="StartDate"
                                 name="startDate"
                                 rules={[{ required: true }]}
                                 hasFeedback>
-                                    {
-                                        console.log(startDate)
-                                    }
-                                <DatePicker 
-                                size="middle" 
-                                style={{ width: 354 }}
-                                value={moment(startDate, "YYYY-MM-DD")}
-                                style={{ width: 354 }}
-                                onChange={(date, dateString) => handleDatePickerChange(date, dateString)}
-                                ref={startDate1}
-                                 />
+                                {
+                                    console.log(startDate)
+                                }
+                                <DatePicker
+                                    size="middle"
+                                    style={{ width: 354 }}
+                                    value={moment(startDate, "YYYY-MM-DD")}
+                                    style={{ width: 354 }}
+                                    onChange={(date, dateString) => handleDatePickerChange(date, dateString)}
+                                    ref={startDate1}
+                                />
                             </Form.Item>
 
                         </Form>
@@ -143,17 +165,17 @@ const Item = (props) => {
                                 <Card size="small">
                                     <Statistic title="Active Employees" value={12000} prefix={<UserOutlined />} valueStyle={{ color: '#3f8600' }} />
                                 </Card>
-                                <Card style={{marginTop:15}} size="small">
+                                <Card style={{ marginTop: 15 }} size="small">
                                     <Statistic title="Absent Employees" value={3} prefix={<UserOutlined />} valueStyle={{ color: '#cf1322' }} />
                                 </Card>
 
                             </div>
                             <div className="col-sm-10">
-                                <DatePicker style={{marginBottom:15,width:250}}/>
+                                <DatePicker style={{ marginBottom: 15, width: 250 }} />
                                 <Search
                                     placeholder="Input department name"
                                     onSearch={value => console.log(value)}
-                                    style={{ width: 250,marginLeft:15 }}
+                                    style={{ width: 250, marginLeft: 15 }}
                                     size="middle"
                                 />
                                 <table className="table table-striped">

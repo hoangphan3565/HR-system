@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Tooltip, Button, Select, Input, Popconfirm, Modal, Form, notification, DatePicker, Pagination, Empty, BackTop } from "antd";
+import { Tooltip, Button, Select, Input, Popconfirm, Modal, Form, notification, DatePicker, Pagination, Empty, BackTop, Spin } from "antd";
 import { VerticalAlignBottomOutlined, UserAddOutlined, VerticalAlignTopOutlined } from "@ant-design/icons";
 import Item from './Item';
 import EmployeeServices from '../../Services/EmployeeServices';
 import DepartmentService from '../../Services/DepartmentService';
 import PositionService from '../../Services/PositionServices';
 import moment from 'moment';
+import UserActivityService from '../../Services/UserActivityService';
 const Table = (props) => {
-
+    const [form] = Form.useForm();
     const search = useRef();
     const code = useRef();
     const firstName = useRef();
@@ -16,7 +17,6 @@ const Table = (props) => {
     const department = useRef();
     const startDate = useRef();
     const timeCheckCode = useRef();
-
     const [searching, setSearching] = useState("");
     const [posing, setPosing] = useState("");
     const [depting, setDepting] = useState("");
@@ -70,7 +70,35 @@ const Table = (props) => {
         }
     }, [searching, posing, depting, link]);
     useEffect(() => {
-        EmployeeServices.list(link).then(res => { setEmployees(res.data); });
+        if (searching === "" && posing === "" && depting === "" && link) {
+            EmployeeServices.list(link).then(res => {
+                setEmployees(res.data);
+            });
+        }
+        if (depting && posing === "" && searching === "" && link) {
+            EmployeeServices.findByDept(depting).then(res => { setEmployees(res.data) })
+        }
+        if (depting && posing && searching === "" && link) {
+            EmployeeServices.findByDeptAndPos(depting, posing).then(res => { setEmployees(res.data) })
+        }
+        if (depting && posing && searching && link) {
+            EmployeeServices.findByCodeAndDeptAndPos(searching, depting, posing).then(res => {
+                if (res.data) {
+                    setEmployees(res.data)
+                }
+                else {
+                    setEmployees([]);
+                }
+            })
+            EmployeeServices.findByFnameAndDeptAndPos(searching, depting, posing).then(res => {
+                if (res.data) {
+                    setEmployees(res.data)
+                }
+                else {
+                    setEmployees([]);
+                }
+            });
+        }
     }, [link])
     useEffect(() => {
         if (posing && depting) {
@@ -251,7 +279,7 @@ const Table = (props) => {
                     setEmployees([]);
                 }
             });
-            EmployeeServices.findByFnameAndDept(searching,depting).then(res=>{
+            EmployeeServices.findByFnameAndDept(searching, depting).then(res => {
                 if (res.data) {
                     setEmployees(res.data)
                 }
@@ -305,6 +333,11 @@ const Table = (props) => {
             "createby": 1,
             "isdeleted": false
         }
+        const actvity={
+            "usr_ID":1,
+            "activityName":`Create employee with code ${code.current.props.value}`,
+            "isdeleted":false,
+        }
         const args = {
             message: 'Created Successfully',
             description:
@@ -312,10 +345,16 @@ const Table = (props) => {
             duration: 1,
         };
         EmployeeServices.add(department.current.props.value, position.current.props.value, employee).then(res => {
+           if(res.status===200){
             setAddModal(false);
+            UserActivityService.add(actvity).then();
             setLink("1");
-            setLink("")
-        }, notification.success(args))
+            setLink("");
+            form.resetFields();
+            notification.success(args)
+           }
+        },)
+      
 
     }
     const getEmployeeByCodeAndFname = (a) => {
@@ -411,7 +450,7 @@ const Table = (props) => {
 
                                     ]}
                                 >
-                                    <Form {...layout} onFinish={onFinish}>
+                                    <Form {...layout} onFinish={onFinish} form={form}>
                                         <Form.Item
                                             label="Code"
                                             name="code"

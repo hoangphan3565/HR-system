@@ -1,11 +1,11 @@
 import React from 'react';
 import { Tag, Tooltip, Button, Modal, Form, Input, Select, DatePicker, notification, Popconfirm } from 'antd';
 import { SolutionOutlined, DeleteOutlined, UserSwitchOutlined } from '@ant-design/icons';
-import { useState, useEffect,useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import EmployeeServices from '../../Services/EmployeeServices';
 import DepartmentService from '../../Services/DepartmentService';
 import PositionService from '../../Services/PositionServices';
-import axios from 'axios';
+import UserActivityService from '../../Services/UserActivityService';
 import moment from 'moment';
 const Item = (props) => {
     const [form] = Form.useForm();
@@ -14,10 +14,10 @@ const Item = (props) => {
     const position = useRef();
     const department = useRef();
     const startDate1 = useRef();
-    const [fla,setFla]=useState();
+    const [fla, setFla] = useState();
     const [visible, setVisible] = useState(false);
     const [addVisible, setAddVisible] = useState(false);
-    const [startDate,setStartDate]=useState();
+    const [startDate, setStartDate] = useState();
     const [dept, setDept] = useState([]);
     const [pos, setPos] = useState([]);
     const layout = {
@@ -33,7 +33,7 @@ const Item = (props) => {
         PositionService.list().then(res => {
             setPos(res.data);
         })
-    },[])
+    }, [])
     const deptOptions = [];
     for (let i = 0; i < dept.length; i++) {
         deptOptions.push(dept[i].dep_ID)
@@ -43,42 +43,53 @@ const Item = (props) => {
         posOptions.push(pos[i].pos_ID)
     }
     const onFinish = () => {
-        const employee={
-            "firstName":firstName.current.props.value,
-            "lastName":lastName.current.props.value,
-            "startdate":startDate1.current.props.value._i
+        const employee = {
+            "firstName": firstName.current.props.value,
+            "lastName": lastName.current.props.value,
+            "startdate": startDate1.current.props.value._i
         }
         const args = {
-            message: 'Created Successfully',
+            message: 'Updated Successfully',
             description:
-                'An new employee was added in Your System !',
-            duration: 1,
-            icon:<UserSwitchOutlined />
+                'An new employee was updated in Your System !',
+            duration: 1
         };
-        EmployeeServices.update(props.e.emp_ID,department.current.props.value,position.current.props.value,employee).then(res=>{
-            props.test("1");
-            props.test("");
-            setVisible(false);
-            
-       },notification.open(args))
+        const actvity = {
+            "usr_ID": 1,
+            "activityName": `Updated employee with code ${props.e.employeeCode}`,
+            "isdeleted": false,
+        }
+        EmployeeServices.update(props.e.emp_ID, department.current.props.value, position.current.props.value, employee).then(res => {
+            if (res.status === 200) {
+                props.test("1");
+                props.test("");
+                setVisible(false);
+                UserActivityService.add(actvity).then();
+                notification.success(args)
+            }
+
+        })
     }
     const onDelete = () => {
-
-        console.log(props.e.emp_ID);
-        axios.delete(`http://localhost:8080/api/employees/${props.e.emp_ID}/uid/1`).then(res => {
-            props.test("1");
-            props.test("");
-        })
-
         const args = {
             message: 'Deleted Successfully',
             description:
                 'A new employee was deleted in Your System !',
             duration: 1,
-            icon: <DeleteOutlined />
-
         };
-        notification.open(args);
+        const actvity = {
+            "usr_ID": 1,
+            "activityName": `Deleted employee with code ${props.e.employeeCode}`,
+            "isdeleted": false,
+        }
+        EmployeeServices.dlte(props.e.emp_ID, 1).then(res => {
+            if (res.status === 200) {
+                props.test("1");
+                props.test("");
+                UserActivityService.add(actvity).then();
+                notification.success(args);
+            }
+        })
     }
     const updateShowModal = () => {
         updateModal === false ? setUpdateModal(true) : setUpdateModal(false);
@@ -112,7 +123,7 @@ const Item = (props) => {
         return (
             <Option value={e}>{e === 2 ? "Nhân viên văn phòng" : "Công nhân"}</Option>
         );
-    })  
+    })
     useEffect(() => {
         form.setFieldsValue({
             code: props.e.employeeCode,
@@ -123,8 +134,8 @@ const Item = (props) => {
             position: props.e.position.pos_ID,
             //tartDate:props.e.startdate
         });
-    },)
- 
+    })
+
     const handleDatePickerChange = (date, dateString) => {
         setStartDate(dateString);
     }
@@ -164,28 +175,28 @@ const Item = (props) => {
                                 name="code"
                                 rules={[{ required: true }]}
                                 hasFeedback>
-                                <Input size="middle" readOnly/>
+                                <Input size="middle" readOnly />
                             </Form.Item>
                             <Form.Item
                                 label="TimeCheck Code"
                                 name="timeCheckCode"
                                 rules={[{ required: true }]}
                                 hasFeedback>
-                                <Input size="middle" readOnly/>
+                                <Input size="middle" readOnly />
                             </Form.Item>
                             <Form.Item
                                 label="First Name"
                                 name="firstName"
                                 rules={[{ required: true }]}
                                 hasFeedback>
-                                <Input size="middle" ref={firstName}/>
+                                <Input size="middle" ref={firstName} />
                             </Form.Item>
                             <Form.Item
                                 label="Last Name"
                                 name="lastName"
                                 rules={[{ required: true }]}
                                 hasFeedback>
-                                <Input size="middle" ref={lastName}/>
+                                <Input size="middle" ref={lastName} />
                             </Form.Item>
 
                             <Form.Item label="Department" name="department">
@@ -206,11 +217,11 @@ const Item = (props) => {
 
                             <Form.Item label="Start Date">
                                 <DatePicker
-                               
-                                  value={moment(startDate, "YYYY-MM-DD")}
-                                  style={{ width: 354 }}
-                                  onChange={(date, dateString) => handleDatePickerChange(date, dateString)}
-                                  ref={startDate1}
+
+                                    value={moment(startDate, "YYYY-MM-DD")}
+                                    style={{ width: 354 }}
+                                    onChange={(date, dateString) => handleDatePickerChange(date, dateString)}
+                                    ref={startDate1}
                                 />
                             </Form.Item>
                         </Form>

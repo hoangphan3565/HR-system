@@ -7,49 +7,56 @@ import Position from '../Components/Positions/Index';
 import Holidays from '../Components/Holidays/Index';
 import Timekeepings from '../Components/TimeKeeping/Index';
 import Error from '../Components/404/Index';
+import DailyShift from '../Components/DailyShift/Index';
 const routes = [
     {
-        path:"/empshift",
-        exact:true,
-        main:()=><EmployeeShift/>
+        path: "/empshift",
+        exact: true,
+        main: () => <EmployeeShift />
     },
     {
-        path:"/employee",
-        exact:true,
-        main:()=><Employee/>
+        path: "/employee",
+        exact: true,
+        main: () => <Employee />
     },
     {
-        path:"/home",
-        exact:true,
-        main:()=><Home />
+        path: "/home",
+        exact: true,
+        main: () => <Home />
     },
     {
-        path:"/department",
-        exact:true,
-        main:()=><Department />
+        path: "/department",
+        exact: true,
+        main: () => <Department />
     },
     {
-        path:"/position",
-        exact:true,
-        main:()=><Position />
+        path: "/position",
+        exact: true,
+        main: () => <Position />
     }
     ,
     {
-        path:"/holidays",
-        exact:true,
-        main:()=><Holidays />
+        path: "/holidays",
+        exact: true,
+        main: () => <Holidays />
     },
     {
-        path:"/holidays",
-        exact:true,
-        main:()=><Holidays />
-    },{
-        path:"/timekeepings",
-        exact:true,
-        main:()=><Timekeepings />
-    },{
-        path:"*",
-        main:()=><Error />
+        path: "/holidays",
+        exact: true,
+        main: () => <Holidays />
+    }, {
+        path: "/timekeepings",
+        exact: true,
+        main: () => <Timekeepings />
+    },
+    {
+        path: "/dailyshifts",
+        exact: true,
+        main: () => <DailyShift  />
+    },
+    {
+        path: "*",
+        main: () => <Error />
     }
 
 ];

@@ -34,16 +34,19 @@ const Index = (props) => {
     const account={
       username:userName.current.props.value,
       password:passWord.current.props.value
-    }
+    }/*
     axios.post("https://www.saigontech.edu.vn/restful-api/login",account).then(res=>{
      if(res.data.errorCode>0){
 
      }
      else{
-       Cookies.set('loginInfo',JSON.stringify(res.data.data))
-       props.history.push("/home");
+       
      }
-    })
+    })*/
+    if(account.username==="a"&&account.password==="b"){
+      Cookies.set('loginInfo',JSON.stringify(account))
+       props.history.push("/home");
+    }
   }
   return (
     <div className="container">

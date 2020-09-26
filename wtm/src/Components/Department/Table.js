@@ -6,7 +6,7 @@ import './css/styles.css';
 import { useEffect, useRef } from 'react';
 import DepartmentService from '../../Services/DepartmentService';
 import moment from 'moment';
-
+import UserActivityService from '../../Services/UserActivityService';
 const Table = (props) => {
     const handleDatePickerChange = (date, dateString) => {
         setStartDate(dateString);
@@ -46,7 +46,21 @@ const Table = (props) => {
                 "startDate": startDate.current.props.value._i,
                 "isdeleted": false
             };
-            DepartmentService.add(department).then(res => { setModal(false); setFla(1); setFla("") }, notification.success(args));
+            const actvity = {
+                "usr_ID": 1,
+                "activityName": `Created new department with name ${departmentName.current.props.value}`,
+                "isdeleted": false,
+            }
+            DepartmentService.add(department).then(res => {
+                if (res.status === 200) {
+                    setModal(false);
+                    setFla(1);
+                    setFla("");
+                    notification.success(args);
+                    UserActivityService.add(actvity).then();
+                }
+            });
+
         }
 
         else {
@@ -69,7 +83,7 @@ const Table = (props) => {
         DepartmentService.list().then(res => {
             setDepartments(res.data);
         })
-    },[fla])
+    }, [fla])
     for (var i = 1; i <= Math.ceil(departments.length / perPage); i++) {
         pageNumbers.push(i);
     }

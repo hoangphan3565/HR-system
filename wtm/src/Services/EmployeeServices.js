@@ -14,6 +14,7 @@ const findByCodeAndDeptAndPos=(a,b,c)=>Api.get(`${Api.url.employees}/find/code/$
 const findByFnameAndPos=(a,b)=>Api.get(`${Api.url.employees}/find/fname/${a}/pos/${b}`)
 const findByFnameAndDept=(a,b)=>Api.get(`${Api.url.employees}/find/fname/${a}/dept/${b}`)
 const findByFnameAndDeptAndPos=(a,b,c)=>Api.get(`${Api.url.employees}/find/fname/${a}/dept/${b}/pos/${c}`)
+const dlte=(a,b)=>Api.delete((`${Api.url.employees}/${a}/uid/${b}`))
 export default{
     list:list,
     clear:clear,
@@ -29,5 +30,6 @@ export default{
     findByCodeAndDeptAndPos:findByCodeAndDeptAndPos,
     findByFnameAndPos:findByFnameAndPos,
     findByFnameAndDept:findByFnameAndDept,
-    findByFnameAndDeptAndPos:findByFnameAndDeptAndPos
+    findByFnameAndDeptAndPos:findByFnameAndDeptAndPos,
+    dlte:dlte
 }

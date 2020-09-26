@@ -6,7 +6,12 @@ const url = {
     employees:"/employees",
     department:"/departments",
     timekeeping:"/timekeepings",
-    login:"/login"
+    login:"/login",
+    holiday:"/holidays",
+    shift:"/shifts",
+    shiftdaily:"/shiftdailies",
+    dailyschedule:"/dailyschedules",
+    useractivity:"/useractivities"
 };
 const instance = axios.create({
     baseURL: url.baseURL,
@@ -16,9 +21,11 @@ const instance = axios.create({
         
     }
 })
+const loginInfoStr=Cookies.get("loginInfo");
+console.log(loginInfoStr);
 /*
 instance.interceptors.request.use((request)=>{
-    const loginInfoStr=Cookies.get("loginInfo");
+    
     if(loginInfoStr){
         const loginInfo=JSON.parse(loginInfoStr);
         request.headers.Authorization=`Bearer ${loginInfo.accessToken}`
