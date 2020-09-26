@@ -9,7 +9,7 @@ import {
   Popconfirm,
   Form,
   Modal,
-  DatePicker,
+  TimePicker,
   notification,
 } from "antd";
 import {
@@ -18,52 +18,54 @@ import {
   UserAddOutlined,
 } from "@ant-design/icons";
 import Item from "./Item";
-import PositionServices from "../../Services/PositionServices";
+import moment from "moment";
+import DailyScheduleService from "../../Services/DailyScheduleService";
 const Table = (props) => {
   const { Option } = Select;
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage] = useState(8);
   const indexOfLast = currentPage * perPage;
   const indexOfFirst = indexOfLast - perPage;
-  const [positions, setPositions] = useState([]);
+  const [dailysche, setDailySchedule] = useState([]);
   const [message, setMessage] = useState("");
   const name = useRef();
+  const startTime = useRef();
+  const endTime = useRef();
   const search = useRef();
   const { Search } = Input;
+
   const [link, setLink] = useState("");
   const [temp, setTemp] = useState([]);
-  console.log(message);
+  const [start, setStartTime] = useState("12:00:00");
+  const [end, setEndTime] = useState("12:00:00");
   useEffect(() => {
     const test1 = [];
     if (link !== "") {
       var fla = 0;
       for (var i = 0; i < temp.length; i++) {
-        //console.log(temp[i].emp_ID);
-        console.log("link:");
         console.log(link);
-        if (Number(link) === temp[i].pos_ID) {
-          PositionServices.get(link).then((res) => {
+        if (Number(link) === temp[i].dls_ID) {
+          DailyScheduleService.get(link).then((res) => {
             test1.push(res.data);
-            setPositions(test1);
+            setDailySchedule(test1);
           });
           fla = 1;
           break;
         }
       }
       if (fla == 0) {
-        setPositions([]);
+        setDailySchedule([]);
       }
     } else {
-      PositionServices.list().then((res) => {
-        setPositions(res.data);
-        console.log("linka:");
+      DailyScheduleService.list().then((res) => {
+        setDailySchedule(res.data);
       });
     }
     refresh();
   }, [link]);
 
   useEffect(() => {
-    PositionServices.get(link).then((res) => {
+    DailyScheduleService.get(link).then((res) => {
       setTemp(res.data);
     });
   }, []);
@@ -75,7 +77,7 @@ const Table = (props) => {
     setMessage("");
   };
   const pageNumbers = [];
-  for (var i = 1; i <= Math.ceil(positions.length / perPage); i++) {
+  for (var i = 1; i <= Math.ceil(dailysche.length / perPage); i++) {
     pageNumbers.push(i);
   }
   const current = (a) => {
@@ -96,8 +98,8 @@ const Table = (props) => {
       </Tooltip>
     );
   });
-  const currentDept = positions.slice(indexOfFirst, indexOfLast);
-  const position = currentDept.map((e, index) => {
+  const currentDept = dailysche.slice(indexOfFirst, indexOfLast);
+  const dailyschedule = currentDept.map((e, index) => {
     return <Item e={e} key={index} test={callback} />;
   });
 
@@ -105,22 +107,27 @@ const Table = (props) => {
     labelCol: { span: 6 },
     wrapperCol: { span: 18 },
   };
+  const test1 = () => {
+    console.log(name.current.props.value);
+  };
   const onFinish = () => {
-    const position = {
-      positionName: name.current.props.value,
+    const dailyschedule = {
+      name: name.current.props.value,
+      startTime: start,
+      endTime: end,
     };
     const args = {
       message: "Created Successfully",
-      description: "An new position was added in Your System !",
+      description: "An new daily schedule was added in Your System !",
       duration: 1,
       icon: <UserAddOutlined />,
     };
-    PositionServices.add(position).then((res) => {
+    DailyScheduleService.add(dailyschedule).then((res) => {
       setAddModal(false);
       setLink("1");
       setLink("");
     }, notification.open(args));
-    setMessage("sdsds");
+    setMessage("added");
   };
   const [addModal, setAddModal] = useState(false);
   const toggleModal = () => {
@@ -133,7 +140,19 @@ const Table = (props) => {
   const handleChange = (value) => {
     setHook(value);
   };
+
+  const TimepickerOnChange = (time) => {
+    setStartTime(time);
+  };
+
   const [hook, setHook] = useState([]);
+  const onChangeStart = (time, timeString) => {
+    setStartTime(timeString);
+  };
+  const onChangeEnd = (time, timeString) => {
+    setEndTime(timeString);
+  };
+  const format = "HH:mm:ss";
   return (
     <div>
       <div className="container">
@@ -141,9 +160,9 @@ const Table = (props) => {
           <div className="card-header">
             <div className="row align-items-center">
               <div className="col-sm-4">
-                <h5>Position:</h5>
+                <h5>Daily Schedules:</h5>
                 <Search
-                  placeholder="Input posion id "
+                  placeholder="Input id "
                   onSearch={(value) => test(value)}
                   style={{ width: 250 }}
                   size="middle"
@@ -178,7 +197,7 @@ const Table = (props) => {
                 </Tooltip>
                 <Modal
                   visible={addModal}
-                  title="Create Position"
+                  title="Create DailySchedule"
                   onCancel={handleCancel}
                   footer={[
                     <Button key="back" onClick={handleCancel}>
@@ -192,11 +211,26 @@ const Table = (props) => {
                   <Form {...layout}>
                     <Form.Item
                       label="Name"
-                      name="deptName"
+                      name="Name"
                       rules={[{ required: true }]}
                       hasFeedback
                     >
                       <Input size="middle" ref={name} />
+                    </Form.Item>
+                    <Form.Item label="Start Time">
+                      <TimePicker
+                        defaultValue={moment(start, format)}
+                        format={format}
+                        onChange={onChangeStart}
+                      />
+                    </Form.Item>
+
+                    <Form.Item label="End Time">
+                      <TimePicker
+                        defaultValue={moment(end, format)}
+                        format={format}
+                        onChange={onChangeEnd}
+                      />
                     </Form.Item>
                   </Form>
                 </Modal>
@@ -209,11 +243,13 @@ const Table = (props) => {
                 <thead>
                   <tr>
                     <th>Id</th>
-                    <th>Position Name</th>
+                    <th>Daily Schedule Name</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
-                <tbody>{position}</tbody>
+                <tbody>{dailyschedule}</tbody>
               </table>
             </div>
           </div>

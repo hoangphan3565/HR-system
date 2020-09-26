@@ -7,36 +7,28 @@ import {
   Form,
   Input,
   Select,
-  DatePicker,
+  TimePicker,
   Popconfirm,
   Statistic,
   Card,
   notification,
 } from "antd";
-import {
-  SolutionOutlined,
-  EditOutlined,
-  UsergroupDeleteOutlined,
-  DeleteOutlined,
-} from "@ant-design/icons";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useState } from "react";
-import { UserOutlined } from "@ant-design/icons";
-import "./css/styles.css";
 import { useEffect } from "react";
-import PositionService from "../../Services/PositionServices";
-import axios from "axios";
+
+import ShiftService from "../../Services/ShiftService";
 const Item = (props) => {
-  //console.log(props.e);
   const [visible, setVisible] = useState(false);
   const [updateVisible, setUpdateVisible] = useState(false);
   const id = useRef();
   const name = useRef();
-  const [pos, setPos] = useState([]);
+  const code = useRef();
+  const [sh, setShift] = useState([]);
   const layout = {
     labelCol: { span: 6 },
     wrapperCol: { span: 18 },
   };
-  const { Option } = Select;
   const [form] = Form.useForm();
 
   const toggleUpdateVisible = () => {
@@ -46,13 +38,13 @@ const Item = (props) => {
     setVisible(false);
   };
   const onDelete = () => {
-    PositionService.del(props.e.pos_ID).then((res) => {
+    ShiftService.del(props.e.sif_ID).then((res) => {
       props.test("done");
       props.test("");
     });
     const args = {
       message: "Deleted Successfully",
-      description: "A new employee was deleted in Your System !",
+      description: "A new shift was deleted in Your System !",
       duration: 1,
       icon: <DeleteOutlined />,
     };
@@ -62,17 +54,17 @@ const Item = (props) => {
     setUpdateVisible(false);
   };
   const onFinish = () => {
-    const position = {
-      pos_ID: id.current.props.value,
-      positionName: name.current.props.value,
+    const sif = {
+      shiftName: name.current.props.value,
+      shiftCode: code.current.props.value,
     };
+    console.log(sif);
     const args = {
       message: "Updateed Successfully",
-      description: "This position was updated in Your System !",
+      description: "This shift was updated in Your System !",
       duration: 1,
     };
-    console.log(position);
-    PositionService.update(props.e.pos_ID, position).then((res) => {
+    ShiftService.update(props.e.sif_ID, sif).then((res) => {
       props.test("done");
       props.test("");
       setUpdateVisible(false);
@@ -80,19 +72,23 @@ const Item = (props) => {
   };
   useEffect(() => {
     form.setFieldsValue({
-      pos_ID: props.e.pos_ID,
-      positionName: props.e.positionName,
+      sif_ID: props.e.sif_ID,
+      shiftName: props.e.shiftName,
+      shiftCode: props.e.shiftCode,
     });
   });
   useEffect(() => {
-    PositionService.list().then((res) => {
-      setPos(res.data);
+    ShiftService.list().then((res) => {
+      setShift(res.data);
     });
   }, []);
+
   return (
-    <tr key={props.e.pos_ID}>
-      <td>{props.e.pos_ID}</td>
-      <td>{props.e.positionName}</td>
+    <tr key={props.e.sif_ID}>
+      <td>{props.e.sif_ID}</td>
+      <td>{props.e.shiftCode}</td>
+      <td>{props.e.shiftName}</td>
+
       <td>
         <Tooltip title="Update!">
           <Button
@@ -103,7 +99,7 @@ const Item = (props) => {
           />
           <Modal
             visible={updateVisible}
-            title="Update Position"
+            title="Update Shift"
             onCancel={handleUpdateCancel}
             footer={[
               <Button key="back" onClick={handleEmplCancel}>
@@ -120,20 +116,13 @@ const Item = (props) => {
             ]}
           >
             <Form {...layout} form={form} onFinish={onFinish}>
-              <Form.Item
-                label="Id"
-                name="pos_ID"
-                rules={[{ required: true }]}
-                hasFeedback
-              >
+              <Form.Item label="ID" name="sif_ID" hasFeedback>
                 <Input size="middle" ref={id} readOnly />
               </Form.Item>
-              <Form.Item
-                label="Name"
-                name="positionName"
-                rules={[{ required: true }]}
-                hasFeedback
-              >
+              <Form.Item label="Shift Code" name="shiftCode" hasFeedback>
+                <Input size="middle" ref={code} />
+              </Form.Item>
+              <Form.Item label="Shift Name" name="shiftName" hasFeedback>
                 <Input size="middle" ref={name} />
               </Form.Item>
             </Form>
@@ -142,7 +131,7 @@ const Item = (props) => {
         <Tooltip title="Delete">
           <Popconfirm
             placement="top"
-            title="Are you sure delete this position    !"
+            title="Are you sure delete this shift    !"
             onConfirm={onDelete}
           >
             <Button
