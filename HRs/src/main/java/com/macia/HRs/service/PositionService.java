@@ -22,4 +22,8 @@ public class PositionService {
         Query query = em.createNamedQuery("position_findAllAvailable", Position.class);
         return query.getResultList();
     }
+    public List<Position> findAllLikeName() {
+        Query query = em.createNamedQuery("position_findAllLikeName", Position.class);
+        return query.getResultList();
+    }
 }

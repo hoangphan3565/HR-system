@@ -1,7 +1,11 @@
 package com.macia.HRs.api;
 
+import com.macia.HRs.entity.Daily_Schedule;
+import com.macia.HRs.entity.Shift;
 import com.macia.HRs.entity.Shift_Daily;
+import com.macia.HRs.repository.DailyScheduleRepository;
 import com.macia.HRs.repository.ShiftDailyRepository;
+import com.macia.HRs.repository.ShiftRepository;
 import com.macia.HRs.service.ShiftDailyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -23,6 +27,12 @@ public class ShiftDailyResource {
     @Autowired
     private ShiftDailyService sidService;
 
+    @Autowired
+    private DailyScheduleRepository dsrepo;
+    
+    @Autowired
+    private ShiftRepository srepo;
+    
     @GetMapping()
     @ResponseBody
     @CrossOrigin("*")
@@ -64,11 +74,16 @@ public class ShiftDailyResource {
         return ResponseEntity.ok().body(ShiftDaily);
     }
 
-
-    @PostMapping()
+    
+    @PostMapping("/create/dls/{dlsid}/shift/{sid}/uid/{uid}")
     @ResponseBody
     @CrossOrigin("*")
-    public Shift_Daily createShiftDaily(@RequestBody Shift_Daily ShiftDaily) {
+    public Shift_Daily createShiftDaily(@RequestBody Shift_Daily ShiftDaily,@PathVariable int dlsid,@PathVariable int sid,@PathVariable int uid) {
+    	Daily_Schedule ds=dsrepo.findById(dlsid).orElseThrow(null);
+    	ShiftDaily.setDaily_schedule(ds);
+    	Shift s=srepo.findById(sid).orElseThrow(null);
+    	ShiftDaily.setShift(s);
+    	ShiftDaily.setCreateBy(uid);
         return sidRepo.save(ShiftDaily);
     }
 
@@ -80,7 +95,7 @@ public class ShiftDailyResource {
             @PathVariable(value = "uid") Integer uid,
             @RequestBody Shift_Daily ShiftDailyDetails)
             throws ResourceNotFoundException {
-        Shift_Daily ShiftDaily =
+        Shift_Daily ShiftDaily =		
                 sidRepo
                         .findById(ShiftDailyId)
                         .orElseThrow(() -> new ResourceNotFoundException("ShiftDaily not found on :: " + ShiftDailyId));

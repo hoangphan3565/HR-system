@@ -22,6 +22,8 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(name = "dailyschedule_findAllAvailable",
                 query = "SELECT d FROM Daily_Schedule d where d.isdeleted=false"),
+        @NamedQuery(name = "dailyschedule_findAllLikeName",
+        query = "from Daily_Schedule d where LOWER(d.Name) like '%' || :name ||'%' d.isdeleted=false")
 })
 public class Daily_Schedule implements Serializable {
 

@@ -30,7 +30,12 @@ public class UserActivityResource {
     public List<User_Activity> getAllUserActivity(){
         return usaService.findAllAvailable();
     }
-
+    @GetMapping("/uid/{uid}")
+    @CrossOrigin("*")
+    @ResponseBody
+    public List<User_Activity> getActivityById(@PathVariable int uid){
+        return usaService.findByUserId(uid);
+    }
     @GetMapping("/count")
     @CrossOrigin("*")
     @ResponseBody

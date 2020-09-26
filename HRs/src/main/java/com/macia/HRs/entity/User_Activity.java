@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -21,6 +23,8 @@ import java.time.LocalDateTime;
                 query = "SELECT ura FROM User_Activity ura"),
         @NamedQuery(name = "useractivity_findAllAvailable",
                 query = "SELECT ura FROM User_Activity ura where ura.isdeleted=false"),
+        @NamedQuery(name="useractivity_findByUserId",
+        		query="SELECT ura FROM User_Activity ura where ura.USR_ID=:usr_id and ura.isdeleted=false")
 })
 
 public class User_Activity implements Serializable {
@@ -35,6 +39,8 @@ public class User_Activity implements Serializable {
     @Column(name = "ActivityName", length = 500)
     private String activityName;
 
+    @CreationTimestamp
+    @Column()
     private LocalDateTime datetime;
 
     @UpdateTimestamp

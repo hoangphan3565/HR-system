@@ -61,8 +61,16 @@ public class PositionResource {
                         .orElseThrow(() -> new ResourceNotFoundException("Position not found on :: " + PositionId));
         return ResponseEntity.ok().body(Position);
     }
+    //findAllLikeName
+    @GetMapping("/find/{name}")
+    @ResponseBody
+    @CrossOrigin("*")
+    public List<Position> getPositionLikeName(@PathVariable(value = "name") String Name)
+            throws ResourceNotFoundException {
+       return posService.findAllLikeName();
+    }
 
-
+    
     @PostMapping()
     @ResponseBody
     @CrossOrigin("*")

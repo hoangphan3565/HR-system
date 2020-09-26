@@ -39,7 +39,7 @@ public class TimeKeepingResource {
         if(record>0){
             return "Successfully synchronized "+record+" lines of data!";
         }
-        return "Everything has been synchronized!";
+        return "Everythin	g has been synchronized!";
     }
 
     @GetMapping("/{id}")

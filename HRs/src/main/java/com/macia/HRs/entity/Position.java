@@ -26,6 +26,8 @@ import java.util.List;
         query = "SELECT p FROM Position p where p.isDeleted=false "),
         @NamedQuery(name = "position_findByName",
                 query = "SELECT p FROM Position p WHERE p.positionName = :posname"),
+        @NamedQuery(name = "position_findAllLikeName",
+        query = "from Position p where LOWER(p.positionName) like '%' || :posname ||'%' and p.isDeleted=false")
 })
 
 public class Position implements Serializable {
