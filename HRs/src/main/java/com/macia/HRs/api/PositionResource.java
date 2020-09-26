@@ -65,9 +65,9 @@ public class PositionResource {
     @GetMapping("/find/{name}")
     @ResponseBody
     @CrossOrigin("*")
-    public List<Position> getPositionLikeName(@PathVariable(value = "name") String Name)
+    public List<Position> getPositionLikeName(@PathVariable(value = "name") String posname)
             throws ResourceNotFoundException {
-       return posService.findAllLikeName();
+       return posService.findAllLikeName(posname);
     }
 
     
