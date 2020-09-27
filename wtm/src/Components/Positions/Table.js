@@ -20,7 +20,7 @@ import PositionServices from "../../Services/PositionServices";
 const Table = (props) => {
   const { Option } = Select;
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(8);
+  const [perPage, setPerPage] = useState(10);
   const indexOfLast = currentPage * perPage;
   const indexOfFirst = indexOfLast - perPage;
   const [positions, setPositions] = useState([]);

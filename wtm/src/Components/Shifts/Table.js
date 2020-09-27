@@ -7,21 +7,20 @@ import {
   Form,
   Modal,
   notification,
+  Pagination
 } from "antd";
 import {
   VerticalAlignBottomOutlined,
-  BankOutlined,
-  UserAddOutlined,
+  SubnodeOutlined,
 } from "@ant-design/icons";
 import Item from "./Item";
 import ShiftService from "../../Services/ShiftService";
 const Table = (props) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage] = useState(8);
+  const [perPage, setPerPage] = useState(10);
   const indexOfLast = currentPage * perPage;
   const indexOfFirst = indexOfLast - perPage;
   const [sif, setShift] = useState([]);
-  const [message, setMessage] = useState("");
   const name = useRef();
   const code = useRef();
   const search = useRef();
@@ -29,7 +28,12 @@ const Table = (props) => {
 
   const [link, setLink] = useState("");
   const [temp, setTemp] = useState([]);
-
+  const onShowSizeChange = (current, pageSize) => {
+    setPerPage(pageSize);
+  }
+  const onChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  }
   useEffect(() => {
     const test1 = [];
     if (link !== "") {
@@ -53,43 +57,20 @@ const Table = (props) => {
         setShift(res.data);
       });
     }
-    refresh();
   }, [link]);
 
   useEffect(() => {
     ShiftService.get(link).then((res) => {
       setTemp(res.data);
     });
-  }, []);
+  },[]);
 
   const callback = (a) => {
     setLink(a);
   };
-  const refresh = () => {
-    setMessage("");
-  };
-  const pageNumbers = [];
-  for (var i = 1; i <= Math.ceil(sif.length / perPage); i++) {
-    pageNumbers.push(i);
-  }
-  const current = (a) => {
-    setCurrentPage(a);
-  };
   const test = (a) => {
     setLink(a);
   };
-
-  const showpage = pageNumbers.map((page, index) => {
-    return (
-      <Tooltip title={index + 1} key={index}>
-        <li className="page-item">
-          <a className="page-link" onClick={() => current(index + 1)}>
-            {page}
-          </a>
-        </li>
-      </Tooltip>
-    );
-  });
   const currentShift = sif.slice(indexOfFirst, indexOfLast);
   const shift = currentShift.map((e, index) => {
     return <Item e={e} key={index} test={callback} />;
@@ -102,21 +83,24 @@ const Table = (props) => {
 
   const onFinish = () => {
     const shift = {
-      shiftCode: code.current.props.value,
-      shiftName: name.current.props.value,
+      "shiftCode": code.current.props.value,
+      "shiftName": name.current.props.value,
+      "isDeleted": false
+
     };
     const args = {
       message: "Created Successfully",
       description: "An new shift was added in Your System !",
-      duration: 1,
-      icon: <UserAddOutlined />,
+      duration: 1
     };
     ShiftService.add(shift).then((res) => {
-      setAddModal(false);
-      setLink("1");
-      setLink("");
-    }, notification.open(args));
-    setMessage("added");
+      if (res.status === 200) {
+        setAddModal(false);
+        setLink("1");
+        setLink("");
+        notification.success(args);
+      }
+    });
   };
   const [addModal, setAddModal] = useState(false);
   const toggleModal = () => {
@@ -129,13 +113,13 @@ const Table = (props) => {
   return (
     <div>
       <div className="container">
+        <h5>Shifts:</h5>
         <div className="card">
           <div className="card-header">
             <div className="row align-items-center">
               <div className="col-sm-4">
-                <h5>Shifts:</h5>
                 <Search
-                  placeholder="Input id "
+                  placeholder="Search..."
                   onSearch={(value) => test(value)}
                   style={{ width: 250 }}
                   size="middle"
@@ -159,7 +143,7 @@ const Table = (props) => {
                 </Tooltip>
                 <Tooltip placement="topRight" title="Create!">
                   <Button
-                    icon={<BankOutlined />}
+                    icon={<SubnodeOutlined />}
                     type="primary"
                     id="addept"
                     onClick={toggleModal}
@@ -208,7 +192,7 @@ const Table = (props) => {
               <table className="table table-striped">
                 <thead>
                   <tr>
-                    <th>Id</th>
+                    <th>ID</th>
                     <th>Shift Code</th>
                     <th>Shift Name</th>
                     <th>Actions</th>
@@ -216,23 +200,16 @@ const Table = (props) => {
                 </thead>
                 <tbody>{shift}</tbody>
               </table>
+              <Pagination
+                showSizeChanger
+                current={currentPage}
+                onShowSizeChange={onShowSizeChange}
+                onChange={onChange}
+                total={sif.length}
+                showQuickJumper
+              />
             </div>
           </div>
-          <ul className="pagination justify-content-center">
-            <li className="page-item disabled">
-              <a className="page-link" href="#" tabIndex="-1">
-                Previous
-              </a>
-            </li>
-            {showpage}
-            <Tooltip title="Next :)">
-              <li className="page-item">
-                <a className="page-link" href="#">
-                  Next
-                </a>
-              </li>
-            </Tooltip>
-          </ul>
         </div>
       </div>
     </div>

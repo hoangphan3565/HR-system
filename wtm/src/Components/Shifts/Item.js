@@ -1,16 +1,11 @@
 import React, { useRef } from "react";
 import {
-  Tag,
   Tooltip,
   Button,
   Modal,
   Form,
   Input,
-  Select,
-  TimePicker,
   Popconfirm,
-  Statistic,
-  Card,
   notification,
 } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
@@ -38,17 +33,16 @@ const Item = (props) => {
     setVisible(false);
   };
   const onDelete = () => {
-    ShiftService.del(props.e.sif_ID).then((res) => {
-      props.test("done");
-      props.test("");
-    });
     const args = {
       message: "Deleted Successfully",
       description: "A new shift was deleted in Your System !",
-      duration: 1,
-      icon: <DeleteOutlined />,
+      duration: 1
     };
-    notification.open(args);
+    ShiftService.del(props.e.sif_ID,1).then((res) => {
+      props.test("done");
+      props.test("");
+      notification.success(args);
+    });
   };
   const handleUpdateCancel = () => {
     setUpdateVisible(false);
@@ -58,17 +52,20 @@ const Item = (props) => {
       shiftName: name.current.props.value,
       shiftCode: code.current.props.value,
     };
-    console.log(sif);
     const args = {
-      message: "Updateed Successfully",
+      message: "Updated Successfully",
       description: "This shift was updated in Your System !",
       duration: 1,
     };
-    ShiftService.update(props.e.sif_ID, sif).then((res) => {
+    ShiftService.update(props.e.sif_ID,1, sif).then((res) => {
+     if(res.status===200){
       props.test("done");
       props.test("");
       setUpdateVisible(false);
-    }, notification.open(args));
+      form.resetFields();
+      notification.success(args);
+     }
+    },);
   };
   useEffect(() => {
     form.setFieldsValue({

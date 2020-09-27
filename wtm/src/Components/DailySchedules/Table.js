@@ -115,6 +115,7 @@ const Table = (props) => {
       name: name.current.props.value,
       startTime: start,
       endTime: end,
+      "isDeleted":false
     };
     const args = {
       message: "Created Successfully",
@@ -222,6 +223,7 @@ const Table = (props) => {
                         defaultValue={moment(start, format)}
                         format={format}
                         onChange={onChangeStart}
+                        style={{width:354}}
                       />
                     </Form.Item>
 
@@ -230,6 +232,7 @@ const Table = (props) => {
                         defaultValue={moment(end, format)}
                         format={format}
                         onChange={onChangeEnd}
+                        style={{width:354}}
                       />
                     </Form.Item>
                   </Form>
