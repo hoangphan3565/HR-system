@@ -5,12 +5,12 @@ import com.macia.HRs.repository.AppUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.ResponseEntity;
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 
 @RestController
 @RequestMapping("/api/appusers")
@@ -62,6 +62,9 @@ public class AppUserResource {
     @CrossOrigin("*")
     @ResponseBody
     public AppUser createAppUser(@RequestBody AppUser AppUser) {
+    	//BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		//String hashedPassword = passwordEncoder.encode(AppUser.getPassword());
+		//AppUser.setPassword(hashedPassword);
         return AUserRepo.save(AppUser);
     }
 

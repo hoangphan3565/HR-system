@@ -1,93 +1,115 @@
 import React, { useRef } from "react";
 import {
+  Tag,
   Tooltip,
   Button,
   Modal,
   Form,
   Input,
   Select,
+  TimePicker,
   Popconfirm,
+  Statistic,
+  Card,
   notification,
 } from "antd";
 import {
+  SolutionOutlined,
   EditOutlined,
+  UsergroupDeleteOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
 import { useState } from "react";
-import "./css/styles.css";
+import { UserOutlined } from "@ant-design/icons";
 import { useEffect } from "react";
 import PositionService from "../../Services/PositionServices";
+import axios from "axios";
+import moment from "moment";
+import DailyScheduleService from "../../Services/DailyScheduleService";
 const Item = (props) => {
-  console.log(props.e);
+  //console.log(props.e);
   const [visible, setVisible] = useState(false);
   const [updateVisible, setUpdateVisible] = useState(false);
   const id = useRef();
   const name = useRef();
-  const [pos, setPos] = useState([]);
+  const startTime1 = useRef();
+  const endTime1 = useRef();
+  const [dls, setDls] = useState([]);
+  const [start, setStartTime] = useState();
+  const [end, setEndTime] = useState();
   const layout = {
     labelCol: { span: 6 },
     wrapperCol: { span: 18 },
   };
-  const { Option } = Select;
   const [form] = Form.useForm();
 
   const toggleUpdateVisible = () => {
     setUpdateVisible(true);
+    setStartTime(props.e.startTime);
+    setEndTime(props.e.endTime);
   };
   const handleEmplCancel = () => {
     setVisible(false);
   };
   const onDelete = () => {
-    const args = {
-      message: "Deleted Successfully",
-      description: "A new employee was deleted in Your System !",
-      duration: 1
-    };
-    PositionService.del(props.e.pos_ID,1).then((res) => {
+    DailyScheduleService.del(props.e.dls_ID).then((res) => {
       props.test("done");
       props.test("");
-      notification.success(args);
-    }); 
+    });
+    const args = {
+      message: "Deleted Successfully",
+      description: "A new daily schedule was deleted in Your System !",
+      duration: 1,
+      icon: <DeleteOutlined />,
+    };
+    notification.open(args);
   };
   const handleUpdateCancel = () => {
     setUpdateVisible(false);
   };
   const onFinish = () => {
-    const position = {
-      pos_ID: id.current.props.value,
-      positionName: name.current.props.value,
+    const dls = {
+      name: name.current.props.value,
+      startTime: start,
+      endTime: end,
     };
+    console.log(dls);
     const args = {
       message: "Updateed Successfully",
-      description: "This position was updated in Your System !",
+      description: "This daily schedule was updated in Your System !",
       duration: 1,
     };
-    console.log(position);
-    PositionService.update(props.e.pos_ID,1,position).then((res) => {
-      if(res.status===200){
-        setUpdateVisible(false);
-        props.test("done");
-        props.test("");
-        notification.success(args);
-        form.resetFields();
-      }
-    });
+    DailyScheduleService.update(props.e.dls_ID, dls).then((res) => {
+      props.test("done");
+      props.test("");
+      setUpdateVisible(false);
+    }, notification.open(args));
   };
   useEffect(() => {
     form.setFieldsValue({
-      pos_ID: props.e.pos_ID,
-      positionName: props.e.positionName,
+      dls_ID: props.e.dls_ID,
+      name: props.e.name,
     });
   });
   useEffect(() => {
-    PositionService.list().then((res) => {
-      setPos(res.data);
+    DailyScheduleService.list().then((res) => {
+      setDls(res.data);
     });
   }, []);
+
+  const onChangeStart = (time, timeString) => {
+    setStartTime(timeString);
+  };
+  const onChangeEnd = (time, timeString) => {
+    setEndTime(timeString);
+  };
+  const format = "HH:mm:ss";
   return (
-    <tr key={props.e.pos_ID}>
-      <td>{props.e.pos_ID}</td>
-      <td>{props.e.positionName}</td>
+    <tr key={props.e.dls_ID}>
+      <td>{props.e.dls_ID}</td>
+      <td>{props.e.name}</td>
+      <td>{props.e.startTime}</td>
+      <td>{props.e.endTime}</td>
       <td>
         <Tooltip title="Update!">
           <Button
@@ -117,7 +139,7 @@ const Item = (props) => {
             <Form {...layout} form={form} onFinish={onFinish}>
               <Form.Item
                 label="Id"
-                name="pos_ID"
+                name="dls_ID"
                 rules={[{ required: true }]}
                 hasFeedback
               >
@@ -125,11 +147,29 @@ const Item = (props) => {
               </Form.Item>
               <Form.Item
                 label="Name"
-                name="positionName"
+                name="name"
                 rules={[{ required: true }]}
                 hasFeedback
               >
                 <Input size="middle" ref={name} />
+              </Form.Item>
+              <Form.Item label="Start Time">
+                <TimePicker
+                  value={moment(start, format)}
+                  style={{ width: 354 }}
+                  format={format}
+                  onChange={onChangeStart}
+                  ref={startTime1}
+                />
+              </Form.Item>
+              <Form.Item label="End Time">
+                <TimePicker
+                  defaultValue={moment(end, format)}
+                  style={{ width: 354 }}
+                  format={format}
+                  onChange={onChangeEnd}
+                  ref={endTime1}
+                />
               </Form.Item>
             </Form>
           </Modal>

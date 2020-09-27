@@ -8,6 +8,8 @@ import Holidays from '../Components/Holidays/Index';
 import Timekeepings from '../Components/TimeKeeping/Index';
 import Error from '../Components/404/Index';
 import DailyShift from '../Components/DailyShift/Index';
+import Shift from '../Components/Shifts/Index';
+import DailySchedule from '../Components/DailySchedules/Index';
 const routes = [
     {
         path: "/empshift",
@@ -53,6 +55,16 @@ const routes = [
         path: "/dailyshifts",
         exact: true,
         main: () => <DailyShift  />
+    },
+    {
+        path: "/dailyschedules",
+        exact: true,
+        main: () => <DailySchedule />
+    },
+    {
+        path: "/shifts",
+        exact: true,
+        main: () => <Shift  />
     },
     {
         path: "*",

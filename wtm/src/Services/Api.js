@@ -11,7 +11,7 @@ const url = {
     shift:"/shifts",
     shiftdaily:"/shiftdailies",
     dailyschedule:"/dailyschedules",
-    useractivity:"/useractivities"
+    useractivity:"/useractivities",
 };
 const instance = axios.create({
     baseURL: url.baseURL,

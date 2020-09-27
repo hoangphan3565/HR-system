@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/api/positions")
 public class PositionResource {
 
@@ -24,7 +25,6 @@ public class PositionResource {
 
     @GetMapping()
     @ResponseBody
-    @CrossOrigin("*")
     public List<Position> getAllPosition(){
         return posService.findAllAvailable();
     }
@@ -36,7 +36,6 @@ public class PositionResource {
         return PositionRepository.count();
     }
     @DeleteMapping("/{id}/uid/{uid}")
-    @CrossOrigin("*")
     public Map<String, Boolean> deletePosition(@PathVariable(value = "id") Integer PositionId,@PathVariable(value = "uid") Integer uid) throws Exception {
         Position Position =
                 PositionRepository
@@ -52,7 +51,6 @@ public class PositionResource {
 
     @GetMapping("/{id}")
     @ResponseBody
-    @CrossOrigin("*")
     public ResponseEntity<Position> getPositionById(@PathVariable(value = "id") Integer PositionId)
             throws ResourceNotFoundException {
         Position Position =
@@ -71,16 +69,14 @@ public class PositionResource {
     }
 
     
-    @PostMapping()
+    @PostMapping("/uid/{Uid}")
     @ResponseBody
-    @CrossOrigin("*")
-    public Position createPosition(@RequestBody Position Position) {
+    public Position createPosition(@RequestBody Position Position,@PathVariable int Uid) {
         return PositionRepository.save(Position);
     }
 
-
+    
     @PutMapping("/{id}/uid/{uid}")
-    @CrossOrigin("*")
     @ResponseBody
     public ResponseEntity<Position> updatePosition(
             @PathVariable(value = "id") Integer PositionId,

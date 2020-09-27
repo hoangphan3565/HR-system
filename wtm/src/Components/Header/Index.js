@@ -46,7 +46,7 @@ const MenuBar = (props) => {
       const a=res.data;
       setAct(a.reverse());
     })
-  },)
+  },[])
   const acts=act.map((e)=>{
     return(
       <Item e={e}/>
@@ -129,8 +129,8 @@ const MenuBar = (props) => {
               </Menu.Item>
               <SubMenu key="sub2" icon={<CalendarOutlined />} title="Date">
                 <Menu.Item key="10" icon={<CalendarOutlined />}><Link to="/timekeepings" >TimeKeeping</Link></Menu.Item>
-                <Menu.Item key="8" icon={<SplitCellsOutlined />} >Shift</Menu.Item>
-                <Menu.Item key="9" icon={<ContactsOutlined />}>Daily Schedule</Menu.Item>
+                <Menu.Item key="8" icon={<SplitCellsOutlined />} ><Link to="/shifts">Shift</Link></Menu.Item>
+                <Menu.Item key="9" icon={<ContactsOutlined />}><Link to="/dailyschedules" >Daily Schedules</Link></Menu.Item>
                 <Menu.Item key="11" icon={<ContactsOutlined />}><Link to="/dailyshifts" >Daily Shifts</Link></Menu.Item>
                 <Menu.Item key="7" icon={<CalendarOutlined />}><Link to="/holidays" >Holidays</Link></Menu.Item>
               </SubMenu>
