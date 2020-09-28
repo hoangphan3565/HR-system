@@ -13,33 +13,28 @@ const url = {
     dailyschedule:"/dailyschedules",
     useractivity:"/useractivities",
 };
+const loginInfoStr=Cookies.get("loginInfo");
 const instance = axios.create({
     baseURL: url.baseURL,
     headers: {
         "Content-Type": "application/json",
         "Accept": "application/json",
+        "Authorization":loginInfoStr
         
     }
 })
-const loginInfoStr=Cookies.get("loginInfo");
-console.log(loginInfoStr);
-/*
 instance.interceptors.request.use((request)=>{
     
     if(loginInfoStr){
-        const loginInfo=JSON.parse(loginInfoStr);
-        request.headers.Authorization=`Bearer ${loginInfo.accessToken}`
+        console.log(loginInfoStr);
+        request.headers.Authorization=`Bearer ${loginInfoStr}`
     }
 })
-/*
+
 instance.interceptors.response.use((response)=>{
     return response;
-},(error)=>{
-    if(error.response.status===401){
-        window.location.href="/login";
-    }
 })
-*/
+
 export default {
     url: url,
     axios: instance,

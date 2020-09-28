@@ -2,9 +2,19 @@ package com.macia.HRs.api;
 
 import com.macia.HRs.entity.AppUser;
 import com.macia.HRs.repository.AppUserRepository;
+import com.macia.HRs.security.JwtRequest;
+import com.macia.HRs.security.JwtResponse;
+import com.macia.HRs.security.JwtTokenUtil;
+import com.macia.HRs.security.JwtUserDetailsService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,12 +23,12 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/appusers")
+
 public class AppUserResource {
 
     @Autowired
     private AppUserRepository AUserRepo;
-
+/*
     @GetMapping()
     @CrossOrigin("*")
     @ResponseBody
@@ -84,4 +94,7 @@ public class AppUserResource {
         final AppUser updatedAppUser = AUserRepo.save(AppUser);
         return ResponseEntity.ok(updatedAppUser);
     }
+*/
+
+	
 }

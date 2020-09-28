@@ -17,10 +17,10 @@ const Item = (props) => {
     const [dailyShift, setDailyShift] = useState([]);
     const [dailySchedule, setDailySchedule] = useState([]);
     useEffect(() => {
-        ShiftService.get().then(res => {
+        ShiftService.list().then(res => {
             setShift(res.data)
         })
-        DailyScheduleService.get().then(res => {
+        DailyScheduleService.list().then(res => {
             setDailySchedule(res.data)
           
         })
@@ -54,7 +54,30 @@ const Item = (props) => {
         setVisible(false)
     }
     const onFinish = () => {
-
+        const args = {
+            message: 'Updated Successfully',
+            description:
+                'A daily shift was  updated in Your System !',
+            duration: 1,
+        };
+        const dailyshift={
+            "dayOfWeek":Number(dow.current.props.value)
+        };
+        const actvity = {
+            "usr_ID": 1,
+            "activityName": `Updated daily shift with id ${props.e.sdl_ID}`,
+            "isdeleted": false,
+        }
+        ShiftDailyService.update(props.e.sdl_ID,1,dailyshift).then(res=>{
+            if(res.status===200){
+                notification.success(args);
+                UserActivityService.add(actvity).then();
+                props.callBack("1");
+                props.callBack("");
+                setVisible(false);
+            }
+        })
+        
     }
     const onDelete = () => {
         const args = {

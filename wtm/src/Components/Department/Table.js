@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Tooltip, Row, Col, Button, Select, Input, Popconfirm, Form, Modal, DatePicker, notification, Pagination } from "antd";
-import { VerticalAlignBottomOutlined, UsergroupAddOutlined, UserAddOutlined } from "@ant-design/icons";
+import { Tooltip, Button, Input, Popconfirm, Form, Modal, DatePicker, notification, Pagination } from "antd";
+import { VerticalAlignBottomOutlined, SubnodeOutlined } from "@ant-design/icons";
 import Item from './Item';
 import './css/styles.css';
 import { useEffect, useRef } from 'react';
@@ -143,7 +143,7 @@ const Table = (props) => {
                                 <Tooltip placement="topRight" title="Add!">
                                     <Button
                                         id="btnaddempl"
-                                        icon={<UserAddOutlined />}
+                                        icon={<SubnodeOutlined/>}
                                         type="primary"
                                         onClick={toggleModal}
                                         style={{ float: "right" }}>Create</Button>

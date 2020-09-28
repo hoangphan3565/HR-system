@@ -3,7 +3,7 @@ const list = () => Api.get(Api.url.dailyschedule);
 
 const get = (id) => Api.get(`${Api.url.dailyschedule}/${id}`);
 
-const update = (a,b,c) => Api.put(`${Api.url.dailyschedule}/${a}/uid${b}`,c);
+const update = (a,b,c) => Api.put(`${Api.url.dailyschedule}/${a}/uid/${b}`,c);
 
 const add = (a) => Api.post(Api.url.dailyschedule, a);
 
