@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
   Tooltip,
-  Row,
-  Col,
+  Pagination,
   Button,
   Select,
   Input,
@@ -14,8 +13,7 @@ import {
 } from "antd";
 import {
   VerticalAlignBottomOutlined,
-  BankOutlined,
-  UserAddOutlined,
+  SubnodeOutlined
 } from "@ant-design/icons";
 import Item from "./Item";
 import moment from "moment";
@@ -23,7 +21,7 @@ import DailyScheduleService from "../../Services/DailyScheduleService";
 const Table = (props) => {
   const { Option } = Select;
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage] = useState(8);
+  const [perPage, setPerPage] = useState(10);
   const indexOfLast = currentPage * perPage;
   const indexOfFirst = indexOfLast - perPage;
   const [dailysche, setDailySchedule] = useState([]);
@@ -107,28 +105,26 @@ const Table = (props) => {
     labelCol: { span: 6 },
     wrapperCol: { span: 18 },
   };
-  const test1 = () => {
-    console.log(name.current.props.value);
-  };
   const onFinish = () => {
     const dailyschedule = {
-      name: name.current.props.value,
-      startTime: start,
-      endTime: end,
-      "isDeleted":false
+      "name": name.current.props.value,
+      "startTime": start,
+      "endTime": end,
+      "isdeleted": false
     };
     const args = {
       message: "Created Successfully",
       description: "An new daily schedule was added in Your System !",
-      duration: 1,
-      icon: <UserAddOutlined />,
+      duration: 1
     };
     DailyScheduleService.add(dailyschedule).then((res) => {
-      setAddModal(false);
-      setLink("1");
-      setLink("");
-    }, notification.open(args));
-    setMessage("added");
+      if (res.status === 200) {
+        setAddModal(false);
+        setLink("1");
+        setLink("");
+        notification.success(args);
+      }
+    });
   };
   const [addModal, setAddModal] = useState(false);
   const toggleModal = () => {
@@ -153,15 +149,21 @@ const Table = (props) => {
   const onChangeEnd = (time, timeString) => {
     setEndTime(timeString);
   };
+  const onShowSizeChange = (current, pageSize) => {
+    setPerPage(pageSize);
+  }
+  const onChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  }
   const format = "HH:mm:ss";
   return (
     <div>
       <div className="container">
+        <h5>Daily Schedules:</h5>
         <div className="card">
           <div className="card-header">
             <div className="row align-items-center">
               <div className="col-sm-4">
-                <h5>Daily Schedules:</h5>
                 <Search
                   placeholder="Input id "
                   onSearch={(value) => test(value)}
@@ -187,7 +189,7 @@ const Table = (props) => {
                 </Tooltip>
                 <Tooltip placement="topRight" title="Create!">
                   <Button
-                    icon={<BankOutlined />}
+                    icon={<SubnodeOutlined/>}
                     type="primary"
                     id="addept"
                     onClick={toggleModal}
@@ -223,7 +225,7 @@ const Table = (props) => {
                         defaultValue={moment(start, format)}
                         format={format}
                         onChange={onChangeStart}
-                        style={{width:354}}
+                        style={{ width: 354 }}
                       />
                     </Form.Item>
 
@@ -232,7 +234,7 @@ const Table = (props) => {
                         defaultValue={moment(end, format)}
                         format={format}
                         onChange={onChangeEnd}
-                        style={{width:354}}
+                        style={{ width: 354 }}
                       />
                     </Form.Item>
                   </Form>
@@ -254,23 +256,17 @@ const Table = (props) => {
                 </thead>
                 <tbody>{dailyschedule}</tbody>
               </table>
+              <Pagination
+                showSizeChanger
+                current={currentPage}
+                onShowSizeChange={onShowSizeChange}
+                onChange={onChange}
+                total={dailysche.length}
+                showQuickJumper
+              />
             </div>
           </div>
-          <ul className="pagination justify-content-center">
-            <li className="page-item disabled">
-              <a className="page-link" href="#" tabIndex="-1">
-                Previous
-              </a>
-            </li>
-            {showpage}
-            <Tooltip title="Next :)">
-              <li className="page-item">
-                <a className="page-link" href="#">
-                  Next
-                </a>
-              </li>
-            </Tooltip>
-          </ul>
+
         </div>
       </div>
     </div>

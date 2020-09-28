@@ -22,12 +22,12 @@ public class AppUser implements Serializable {
     @Column(name = "USR_ID")
     private Integer USR_ID;
 
-    @Column(name = "FullName", length = 100, nullable = false)
+    @Column(length = 100, nullable = false)
     private String fullName;
 
-    @Column(name = "UserName", length = 15, nullable = false, unique = true)
-    private String UserName;
+    @Column( length = 100, nullable = false, unique = true)
+    private String username;
 
-    @Column(name = "Password", length = 15, nullable = false)
-    private String Password;
+    @Column(length = 200, nullable = false)
+    private String password;
 }

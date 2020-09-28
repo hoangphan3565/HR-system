@@ -38,13 +38,13 @@ const Table = (props) => {
         })
     }, [fla])
     useEffect(() => {
-        ShiftService.get().then(res => {
+        ShiftService.list().then(res => {
             setShift(res.data)
         })
-        DailyScheduleService.get().then(res => {
+        DailyScheduleService.list().then(res => {
             setDailySchedule(res.data)
         })
-    }, [])
+    },[])
 
     const handleCancel = () => {
         setModal(false)
@@ -96,7 +96,6 @@ const Table = (props) => {
             <Option value={e.sif_ID}>{e.shiftName}</Option>
         );
     })
-
     const optionsDsc = dailySchedule.map((e) => {
         return (
             <Option value={e.dls_ID}>{e.name}</Option>
@@ -166,14 +165,14 @@ const Table = (props) => {
                                     <Form.Item label="Daily Schedule" name="DailySch">
                                         <Select ref={dsc}>
                                             {
-                                                optionsDsc
+                                               optionsDsc
                                             }
                                         </Select>
                                     </Form.Item>
                                     <Form.Item label="Shift" name="Shift">
                                         <Select ref={sh}>
                                             {
-                                                optionsShift
+                                               optionsShift
                                             }
                                         </Select>
                                     </Form.Item>

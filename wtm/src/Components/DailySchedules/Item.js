@@ -52,38 +52,40 @@ const Item = (props) => {
     setVisible(false);
   };
   const onDelete = () => {
-    DailyScheduleService.del(props.e.dls_ID).then((res) => {
+    DailyScheduleService.del(props.e.dls_ID,1).then((res) => {
       props.test("done");
       props.test("");
     });
     const args = {
       message: "Deleted Successfully",
       description: "A new daily schedule was deleted in Your System !",
-      duration: 1,
-      icon: <DeleteOutlined />,
+      duration: 1
     };
-    notification.open(args);
+    notification.success(args);
   };
   const handleUpdateCancel = () => {
     setUpdateVisible(false);
   };
   const onFinish = () => {
     const dls = {
-      name: name.current.props.value,
-      startTime: start,
-      endTime: end,
+      "name": name.current.props.value,
+      "startTime": start,
+      "endTime": end,
     };
     console.log(dls);
     const args = {
-      message: "Updateed Successfully",
+      message: "Updated Successfully",
       description: "This daily schedule was updated in Your System !",
       duration: 1,
     };
-    DailyScheduleService.update(props.e.dls_ID, dls).then((res) => {
-      props.test("done");
-      props.test("");
-      setUpdateVisible(false);
-    }, notification.open(args));
+    DailyScheduleService.update(props.e.dls_ID,1,dls).then((res) => {
+      if(res.status===200){
+        props.test("done");
+        props.test("");
+        setUpdateVisible(false);
+        notification.success(args);
+      }
+    });
   };
   useEffect(() => {
     form.setFieldsValue({
