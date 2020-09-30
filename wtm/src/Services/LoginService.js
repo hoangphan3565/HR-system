@@ -1,5 +1,6 @@
 import Api from './Api'
-const login = (a) => (Api.url.login, a);
+import axios from 'axios'
+const login = () => axios.get(Api.url.login);
 export default {
     login: login
 }

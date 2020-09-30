@@ -20,6 +20,10 @@ const Item = (props) => {
     const [startDate, setStartDate] = useState();
     const [dept, setDept] = useState([]);
     const [pos, setPos] = useState([]);
+    const [id, setId] = useState("");
+    useEffect(() => {
+        setId(localStorage.getItem("id"))
+    })
     const layout = {
         labelCol: { span: 6 },
         wrapperCol: { span: 18 },
@@ -55,7 +59,7 @@ const Item = (props) => {
             duration: 1
         };
         const actvity = {
-            "usr_ID": 1,
+            "usr_ID": id,
             "activityName": `Updated employee with code ${props.e.employeeCode}`,
             "isdeleted": false,
         }
@@ -63,8 +67,8 @@ const Item = (props) => {
             if (res.status === 200) {
                 props.test("1");
                 props.test("");
-                setVisible(false);
                 UserActivityService.add(actvity).then();
+                setVisible(false);          
                 notification.success(args)
             }
 
@@ -78,7 +82,7 @@ const Item = (props) => {
             duration: 1,
         };
         const actvity = {
-            "usr_ID": 1,
+            "usr_ID": id,
             "activityName": `Deleted employee with code ${props.e.employeeCode}`,
             "isdeleted": false,
         }

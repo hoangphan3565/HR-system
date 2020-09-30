@@ -18,7 +18,6 @@ import "./css/styles.css";
 import { useEffect } from "react";
 import PositionService from "../../Services/PositionServices";
 const Item = (props) => {
-  console.log(props.e);
   const [visible, setVisible] = useState(false);
   const [updateVisible, setUpdateVisible] = useState(false);
   const id = useRef();
@@ -37,13 +36,18 @@ const Item = (props) => {
   const handleEmplCancel = () => {
     setVisible(false);
   };
+  const [id1,setId1]=useState("");
+  useEffect(()=>{
+    setId1(localStorage.getItem("id"))
+  })
   const onDelete = () => {
     const args = {
       message: "Deleted Successfully",
       description: "A new employee was deleted in Your System !",
       duration: 1
     };
-    PositionService.del(props.e.pos_ID,1).then((res) => {
+    
+    PositionService.del(props.e.pos_ID,id1).then((res) => {
       props.test("done");
       props.test("");
       notification.success(args);
@@ -63,7 +67,7 @@ const Item = (props) => {
       duration: 1,
     };
     console.log(position);
-    PositionService.update(props.e.pos_ID,1,position).then((res) => {
+    PositionService.update(props.e.pos_ID,id1,position).then((res) => {
       if(res.status===200){
         setUpdateVisible(false);
         props.test("done");

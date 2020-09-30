@@ -1,16 +1,22 @@
 import React from 'react';
-import { Tooltip, Tag, Popover, TimePicker, Button,Popconfirm, notification} from 'antd';
-import { useState } from 'react';
+import { Tooltip, Tag, Popover, TimePicker, Button, Popconfirm, notification } from 'antd';
+import { useState, useEffect } from 'react';
 import moment from 'moment';
 import { useRef } from 'react';
 import TimekeepingService from '../../Services/TimekepingService';
+import UserActivityService from '../../Services/UserActivityService';
 function TImeOut(props) {
     //console.log(props.e);
     //console.log(props.e);
     const a = props.e.split(' ');
+    // console.log(a);
     const [visible, setVis] = useState(false);
     const [value, setValue] = useState("");
     const ax = useRef();
+    const [id, setId] = useState("");
+    useEffect(() => {
+        setId(localStorage.getItem("id"))
+    }, [])
     const onClick = () => {
         setVis(true);
         setValue(a[0]);
@@ -18,13 +24,25 @@ function TImeOut(props) {
     const format = 'HH:mm';
 
     const onUpdate = () => {
-        TimekeepingService.update(a[1],value,1).then(res=>{
-            if(res.status===200){
+        const args = {
+            message: 'Update Successfully',
+            description:
+                'This time out  was updated in Your System !',
+            duration: 1,
+        };
+        const actvity = {
+            "usr_ID": id,
+            "activityName": `Deleted Outtimekeepings   with code ${a[1]} in ${props.date}`,
+            "isdeleted": false,
+        }
+        TimekeepingService.update(a[1], value, id).then(res => {
+            if (res.status === 200) {
                 props.callback("");
-                setVis(false);            
+                UserActivityService.add(actvity).then();
+                setVis(false);
                 props.callback("d");
             }
-        })
+        }, notification.success(args))
     }
     const onChange = (time, timeString) => {
         setValue(timeString);
@@ -33,17 +51,23 @@ function TImeOut(props) {
         const args = {
             message: 'Delete Successfully',
             description:
-                'This time out was deleted in Your System !',
+                'This time out  was deleted in Your System !',
             duration: 1,
         };
-        TimekeepingService.clear(a[1], 1).then(res => {
-        
+        const actvity = {
+            "usr_ID": id,
+            "activityName": `Deleted Outtimekeepings   with code ${a[1]} in ${props.date}`,
+            "isdeleted": false,
+        }
+        TimekeepingService.clear(a[1], id).then(res => {
+
             if (res.status === 200) {
                 props.callback("");
+                UserActivityService.add(actvity).then();
                 setVis(false);
                 props.callback("d");
             }
-        },notification.success(args))
+        }, notification.success(args))
     }
     return (
         <Tooltip title="Outside">

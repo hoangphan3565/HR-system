@@ -15,6 +15,7 @@ import {
 } from "@ant-design/icons";
 import Item from "./Item";
 import ShiftService from "../../Services/ShiftService";
+import UserActivityService from '../../Services/UserActivityService';
 const Table = (props) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
@@ -80,14 +81,21 @@ const Table = (props) => {
     labelCol: { span: 6 },
     wrapperCol: { span: 18 },
   };
-
+  const [idUser,setIdUser]=useState("");
+  useEffect(()=>{
+    setIdUser(localStorage.getItem("id"))
+  })
   const onFinish = () => {
     const shift = {
       "shiftCode": code.current.props.value,
       "shiftName": name.current.props.value,
       "isDeleted": false
-
     };
+    const actvity = {
+      "usr_ID":idUser,
+      "activityName": `Created shift with code ${shift.shiftCode}`,
+      "isdeleted": false,
+    }
     const args = {
       message: "Created Successfully",
       description: "An new shift was added in Your System !",
@@ -99,6 +107,7 @@ const Table = (props) => {
         setLink("1");
         setLink("");
         notification.success(args);
+        UserActivityService.add(actvity).then();
       }
     });
   };
@@ -113,7 +122,7 @@ const Table = (props) => {
   return (
     <div>
       <div className="container">
-        <h5>Shifts:</h5>
+        <h5>Shifts</h5>
         <div className="card">
           <div className="card-header">
             <div className="row align-items-center">

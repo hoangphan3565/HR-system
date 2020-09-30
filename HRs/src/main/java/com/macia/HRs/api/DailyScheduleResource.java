@@ -85,6 +85,8 @@ public class DailyScheduleResource {
                         .findById(DailyScheduleId)
                         .orElseThrow(() -> new ResourceNotFoundException("DailySchedule not found on :: " + DailyScheduleId));
         DailySchedule.setName(DailyScheduleDetails.getName());
+        DailySchedule.setEndTime(DailyScheduleDetails.getEndTime());
+        DailySchedule.setStartTime(DailyScheduleDetails.getStartTime());
         DailySchedule.setModifyBy(uid);
         final Daily_Schedule updatedDailySchedule = dlsRepo.save(DailySchedule);
         return ResponseEntity.ok(updatedDailySchedule);

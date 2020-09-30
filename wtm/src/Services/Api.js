@@ -12,27 +12,17 @@ const url = {
     shiftdaily:"/shiftdailies",
     dailyschedule:"/dailyschedules",
     useractivity:"/useractivities",
+    login:"/appusers",
+    employeeshift:"/empshifts"
 };
-const loginInfoStr=Cookies.get("loginInfo");
 const instance = axios.create({
     baseURL: url.baseURL,
     headers: {
+        'Access-Control-Allow-Origin': '*',
         "Content-Type": "application/json",
         "Accept": "application/json",
-        "Authorization":loginInfoStr
         
     }
-})
-instance.interceptors.request.use((request)=>{
-    
-    if(loginInfoStr){
-        console.log(loginInfoStr);
-        request.headers.Authorization=`Bearer ${loginInfoStr}`
-    }
-})
-
-instance.interceptors.response.use((response)=>{
-    return response;
 })
 
 export default {

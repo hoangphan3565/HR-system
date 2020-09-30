@@ -41,12 +41,16 @@ const MenuBar = (props) => {
     pos === "relative" ? setPos("absolute") : setPos("relative");
   }
   localStorage.setItem("pos", pos);
+  const [id,setId]=useState("");
   useEffect(()=>{
-    UserActivityService.get(1).then(res=>{
+    setId(localStorage.getItem("id"))
+  })
+  useEffect(()=>{
+    UserActivityService.get(id).then(res=>{
       const a=res.data;
       setAct(a.reverse());
     })
-  },[])
+  })
   const acts=act.map((e)=>{
     return(
       <Item e={e}/>
@@ -95,9 +99,8 @@ const MenuBar = (props) => {
               <div id="as">
                 <Popover
                   title="Notification"
-                
                  content={
-                  <div style={{overflow:"auto",whiteSpace:"nowrap",width:350,height:200}} className="scrollmenu">
+                  <div style={{overflow:"auto",whiteSpace:"nowrap",width:500,height:300}} className="scrollmenu">
                     {
                       acts.length!==0?acts:"Not have activity"
                     }

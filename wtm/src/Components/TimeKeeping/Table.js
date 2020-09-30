@@ -66,7 +66,7 @@ const Table = (props) => {
     }
     const timekeeping = a.map((e, index) => {
         return (
-            <Item e={e} key={index} call={calla} />
+            <Item e={e} key={index} call={calla} date={test1}/>
         );
     })
     const onSync = () => {

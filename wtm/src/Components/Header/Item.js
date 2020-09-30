@@ -1,5 +1,6 @@
 import React from 'react';
 import {Divider, Button} from 'antd';
+import {TagTwoTone} from '@ant-design/icons'
 import UserActivityService from '../../Services/UserActivityService';
 function Item(props) {
     const Check=()=>{
@@ -9,8 +10,9 @@ function Item(props) {
     }
     return (
         <div onClick={Check} className="check">
-            <p style={{fontSize:12}}>{props.e.activityName}</p>
-            <p style={{fontSize:10,float:"right"}}>{props.e.deleleDate}</p>
+            <TagTwoTone />
+            <p style={{fontSize:12,color:"black"}}>{props.e.activityName}</p>
+            <p style={{fontSize:10,float:"right"}}>{props.e.datetime}</p>
             <Divider></Divider>
         </div>
     );

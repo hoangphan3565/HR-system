@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@CrossOrigin("*")	
 @RequestMapping("/api/useractivities")
 public class UserActivityResource {
 
@@ -31,7 +32,7 @@ public class UserActivityResource {
         return usaService.findAllAvailable();
     }
     @GetMapping("/uid/{uid}")
-    @CrossOrigin("*")
+
     @ResponseBody
     public List<User_Activity> getActivityById(@PathVariable int uid){
         return usaService.findByUserId(uid);

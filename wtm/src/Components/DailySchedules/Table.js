@@ -18,6 +18,7 @@ import {
 import Item from "./Item";
 import moment from "moment";
 import DailyScheduleService from "../../Services/DailyScheduleService";
+import UserActivityService from '../../Services/UserActivityService';
 const Table = (props) => {
   const { Option } = Select;
   const [currentPage, setCurrentPage] = useState(1);
@@ -25,13 +26,9 @@ const Table = (props) => {
   const indexOfLast = currentPage * perPage;
   const indexOfFirst = indexOfLast - perPage;
   const [dailysche, setDailySchedule] = useState([]);
-  const [message, setMessage] = useState("");
   const name = useRef();
-  const startTime = useRef();
-  const endTime = useRef();
   const search = useRef();
   const { Search } = Input;
-
   const [link, setLink] = useState("");
   const [temp, setTemp] = useState([]);
   const [start, setStartTime] = useState("12:00:00");
@@ -41,7 +38,6 @@ const Table = (props) => {
     if (link !== "") {
       var fla = 0;
       for (var i = 0; i < temp.length; i++) {
-        console.log(link);
         if (Number(link) === temp[i].dls_ID) {
           DailyScheduleService.get(link).then((res) => {
             test1.push(res.data);
@@ -59,7 +55,6 @@ const Table = (props) => {
         setDailySchedule(res.data);
       });
     }
-    refresh();
   }, [link]);
 
   useEffect(() => {
@@ -70,9 +65,6 @@ const Table = (props) => {
 
   const callback = (a) => {
     setLink(a);
-  };
-  const refresh = () => {
-    setMessage("");
   };
   const pageNumbers = [];
   for (var i = 1; i <= Math.ceil(dailysche.length / perPage); i++) {
@@ -100,7 +92,11 @@ const Table = (props) => {
   const dailyschedule = currentDept.map((e, index) => {
     return <Item e={e} key={index} test={callback} />;
   });
-
+  const [id, setId] = useState("");
+  useEffect(() => {
+    setId(localStorage.getItem("id"))
+  },[])
+  const [form] = Form.useForm();
   const layout = {
     labelCol: { span: 6 },
     wrapperCol: { span: 18 },
@@ -112,6 +108,11 @@ const Table = (props) => {
       "endTime": end,
       "isdeleted": false
     };
+    const actvity = {
+      "usr_ID": id,
+      "activityName": `Created new daily schedule with name ${dailyschedule.name}`,
+      "isdeleted": false,
+    };
     const args = {
       message: "Created Successfully",
       description: "An new daily schedule was added in Your System !",
@@ -120,8 +121,10 @@ const Table = (props) => {
     DailyScheduleService.add(dailyschedule).then((res) => {
       if (res.status === 200) {
         setAddModal(false);
-        setLink("1");
-        setLink("");
+        setLink("dome");
+        setLink("");      
+        form.resetFields();
+        UserActivityService.add(actvity).then();
         notification.success(args);
       }
     });
@@ -133,16 +136,6 @@ const Table = (props) => {
   const handleCancel = () => {
     setAddModal(false);
   };
-
-  const handleChange = (value) => {
-    setHook(value);
-  };
-
-  const TimepickerOnChange = (time) => {
-    setStartTime(time);
-  };
-
-  const [hook, setHook] = useState([]);
   const onChangeStart = (time, timeString) => {
     setStartTime(timeString);
   };
@@ -159,7 +152,7 @@ const Table = (props) => {
   return (
     <div>
       <div className="container">
-        <h5>Daily Schedules:</h5>
+        <h5>Daily Schedules</h5>
         <div className="card">
           <div className="card-header">
             <div className="row align-items-center">
@@ -211,7 +204,7 @@ const Table = (props) => {
                     </Button>,
                   ]}
                 >
-                  <Form {...layout}>
+                  <Form {...layout} form={form}>
                     <Form.Item
                       label="Name"
                       name="Name"

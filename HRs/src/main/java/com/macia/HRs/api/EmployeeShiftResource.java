@@ -3,6 +3,7 @@ package com.macia.HRs.api;
 import com.macia.HRs.entity.Employee;
 import com.macia.HRs.entity.Employee_Shift;
 import com.macia.HRs.repository.EmployeeShiftRepository;
+import com.macia.HRs.repository.ShiftRepository;
 import com.macia.HRs.service.EmployeeShiftService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
@@ -22,7 +23,8 @@ public class EmployeeShiftResource {
 
     @Autowired
     private EmployeeShiftService emsService;
-
+    @Autowired
+    private ShiftRepository shiftRepo;
 
     @GetMapping()
     @CrossOrigin("*")
@@ -76,5 +78,24 @@ public class EmployeeShiftResource {
     @CrossOrigin("*")
     public Employee_Shift createEmployee_Shift(@RequestBody Employee_Shift Employee_Shift) {
         return emsRepo.save(Employee_Shift);
+    }
+    @PutMapping("/{id}/uid/{uid}/shift/{shiftid}")
+    @CrossOrigin("*")
+    public ResponseEntity<Employee_Shift> updateEmployeeShift(
+            @PathVariable(value = "id") Integer EmployeeShiftId,
+            @PathVariable(value = "uid") Integer uid,
+            @PathVariable(value = "shiftid") Integer shiftid,
+            @RequestBody Employee_Shift EmployeeShiftDetails)
+            throws ResourceNotFoundException {
+        Employee_Shift EmployeeShift =
+                emsRepo
+                        .findById(EmployeeShiftId)
+                        .orElseThrow(() -> new ResourceNotFoundException("EmployeeShift not found on :: " + EmployeeShiftId));
+        EmployeeShift.setStartdate(EmployeeShiftDetails.getStartdate());
+        EmployeeShift.setEnddate(EmployeeShiftDetails.getEnddate());
+        EmployeeShift.setShift(shiftRepo.findById(shiftid).orElseThrow(null));
+        EmployeeShift.setModifyBy(uid);
+        final Employee_Shift updatedEmployeeShift = emsRepo.save(EmployeeShift);
+        return ResponseEntity.ok(updatedEmployeeShift);
     }
 }

@@ -26,6 +26,7 @@ import PositionService from "../../Services/PositionServices";
 import axios from "axios";
 import moment from "moment";
 import DailyScheduleService from "../../Services/DailyScheduleService";
+import UserActivityService from '../../Services/UserActivityService';
 const Item = (props) => {
   //console.log(props.e);
   const [visible, setVisible] = useState(false);
@@ -42,7 +43,10 @@ const Item = (props) => {
     wrapperCol: { span: 18 },
   };
   const [form] = Form.useForm();
-
+  const [id1, setId] = useState("");
+  useEffect(() => {
+    setId(localStorage.getItem("id"))
+  })
   const toggleUpdateVisible = () => {
     setUpdateVisible(true);
     setStartTime(props.e.startTime);
@@ -52,9 +56,15 @@ const Item = (props) => {
     setVisible(false);
   };
   const onDelete = () => {
-    DailyScheduleService.del(props.e.dls_ID,1).then((res) => {
+    const actvity = {
+      "usr_ID": id,
+      "activityName": `Deleted daily schedule with name ${props.e.name}`,
+      "isdeleted": false,
+    };
+    DailyScheduleService.del(props.e.dls_ID, 1).then((res) => {
       props.test("done");
       props.test("");
+      UserActivityService.add(actvity).then();
     });
     const args = {
       message: "Deleted Successfully",
@@ -72,20 +82,25 @@ const Item = (props) => {
       "startTime": start,
       "endTime": end,
     };
-    console.log(dls);
+    const actvity = {
+      "usr_ID": id1,
+      "activityName": `Updateed daily schedule with name ${dls.name}`,
+      "isdeleted": false,
+    };
+
     const args = {
       message: "Updated Successfully",
       description: "This daily schedule was updated in Your System !",
       duration: 1,
     };
-    DailyScheduleService.update(props.e.dls_ID,1,dls).then((res) => {
-      if(res.status===200){
-        props.test("done");
-        props.test("");
-        setUpdateVisible(false);
-        notification.success(args);
-      }
-    });
+    console.log(id1);
+    axios.put(`http://localhost:8080/api/dailyschedules/${props.e.dls_ID}/uid/${id1}`, dls).then(res => {
+      props.test("1");
+      props.test("");
+      setUpdateVisible(false);
+      UserActivityService.add(actvity).then();
+      form.resetFields();
+    })
   };
   useEffect(() => {
     form.setFieldsValue({

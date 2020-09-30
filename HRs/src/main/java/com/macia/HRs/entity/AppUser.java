@@ -1,5 +1,6 @@
 package com.macia.HRs.entity;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -22,12 +23,12 @@ public class AppUser implements Serializable {
     @Column(name = "USR_ID")
     private Integer USR_ID;
 
-    @Column(length = 100, nullable = false)
+    @Column(name = "FullName", length = 100, nullable = false)
     private String fullName;
 
-    @Column( length = 100, nullable = false, unique = true)
-    private String username;
+    @Column(name = "UserName", length = 15, nullable = false, unique = true)
+    private String UserName;
 
-    @Column(length = 200, nullable = false)
-    private String password;
+    @Column(name = "Password", length = 15, nullable = false)
+    private String Password;
 }

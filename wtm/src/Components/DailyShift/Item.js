@@ -53,6 +53,10 @@ const Item = (props) => {
     const handleCancel = () => {
         setVisible(false)
     }
+    const [id, setId] = useState("");
+  useEffect(() => {
+    setId(localStorage.getItem("id"))
+  },[])
     const onFinish = () => {
         const args = {
             message: 'Updated Successfully',
@@ -64,7 +68,7 @@ const Item = (props) => {
             "dayOfWeek":Number(dow.current.props.value)
         };
         const actvity = {
-            "usr_ID": 1,
+            "usr_ID": id,
             "activityName": `Updated daily shift with id ${props.e.sdl_ID}`,
             "isdeleted": false,
         }
@@ -74,6 +78,7 @@ const Item = (props) => {
                 UserActivityService.add(actvity).then();
                 props.callBack("1");
                 props.callBack("");
+                form.resetFields();
                 setVisible(false);
             }
         })
@@ -88,7 +93,7 @@ const Item = (props) => {
 
         };
         const actvity = {
-            "usr_ID": 1,
+            "usr_ID": id,
             "activityName": `Deleted daily shift with id ${props.e.sdl_ID}`,
             "isdeleted": false,
         }
@@ -117,7 +122,7 @@ const Item = (props) => {
                     />
                     <Modal
                         visible={visible}
-                        title="Employee Information"
+                        title="Update DailyShift"
                         onCancel={handleCancel}
                         footer={[
                             <Button key="back" onClick={handleCancel}>

@@ -1,12 +1,14 @@
 import React from 'react';
-import { Tag, Tooltip, Button, Modal, Form, Select, TimePicker, notification, Pagination, message } from 'antd';
+import { Tag, Tooltip, Button, Modal, Form, Select, TimePicker, notification, Pagination, message, DatePicker } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import { useState, useEffect } from 'react';
 import moment from 'moment';
 import TimeIn from './TimeIn';
 import TimeOut from './TImeOut';
+import axios from 'axios';
+import UserActivityService from '../../Services/UserActivityService';
+import TimekepingService from '../../Services/TimekepingService';
 const Item = (props) => {
-    console.log(props.e);
     const [visible, setVisible] = useState(false);
     const checkType = props.e.type.split(' ');
 
@@ -32,19 +34,22 @@ const Item = (props) => {
             checkTimeIn.push(checkTime[i] + " " + testtt[i]);
         }
     }
+    
     for (var i = 0; i < checkType.length; i++) {
         if (checkType[i] ==='out') {
             checkTimeOut.push(checkTime[i] + " " + testtt[i]);
         }
     }
-    const listTimeIn = checkTimeIn.map((e) => {
+    let unique = [...new Set(checkTimeOut)];
+    let unique1 = [...new Set(checkTimeIn)];
+    const listTimeIn = unique1.map((e) => {
         return (
-            <TimeIn e={e} callback={callback} />
+            <TimeIn e={e} callback={callback} date={props.date} />
         );
     })
-    const listTimeOut = checkTimeOut.map((e) => {
+    const listTimeOut = unique.map((e) => {
         return (
-            <TimeOut e={e} callback={callback} />
+            <TimeOut e={e} callback={callback} date={props.date}/>
         );
     })
     const toggleVisible = () => {
@@ -54,15 +59,30 @@ const Item = (props) => {
     const toggleCancel = () => {
         setVisible(false);
     }
+    const [id, setId] = useState("");
+    useEffect(() => {
+        setId(localStorage.getItem("id"))
+    },[])
     const excuteEdit = () => {
-        setVisible(false);
-        const args = {
-            message: 'Updated Successfully',
-            description:
-                'This time was updated in Your System !',
-            duration: 1,
-        };
-        notification.open(args);
+        const test={
+            "reader": 0,
+            "eventData": 55,
+            "createBy": 1,
+            "modifyBy": 1,
+            "isDeleted": false,
+            "dateTime": props.date+"T"+value
+        }
+        const actvity={
+            "usr_ID":id,
+            "activityName":`Create new timekeepings for employee with code ${props.e.employee_code} in ${props.date}`,
+            "isdeleted":false,
+        }
+        TimekepingService.create(props.e.employee_code,test).then(res=>{
+            setVisible(false);
+            UserActivityService.add(actvity).then();
+            props.call("");
+            props.call("ddd");
+        })
     }
 
     const layout = {
@@ -82,6 +102,10 @@ const Item = (props) => {
                 )
             }
         }
+    }
+    const [value, setValue] = useState("12:00");
+    const onChange = (time, timeString) => {
+        setValue(timeString);
     }
     return (
         <tr>
@@ -119,17 +143,10 @@ const Item = (props) => {
                         <Form {...layout}>
                             <Form.Item label="In">
                                 <TimePicker
-                                    defaultValue={moment('12:08', format)}
+                                    defaultValue={moment(value, format)}
                                     format={format}
                                     style={{ width: 350 }}
-                                />
-                            </Form.Item>
-
-                            <Form.Item label="Out">
-                                <TimePicker
-                                    defaultValue={moment('12:08', format)}
-                                    format={format}
-                                    style={{ width: 350 }}
+                                    onChange={onChange}
                                 />
                             </Form.Item>
                         </Form>

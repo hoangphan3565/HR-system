@@ -1,7 +1,11 @@
 package com.macia.HRs.api;
 
 import com.macia.HRs.DTO.TimeKeepingDTO;
+import com.macia.HRs.entity.Department;
+import com.macia.HRs.entity.Employee;
+import com.macia.HRs.entity.Position;
 import com.macia.HRs.entity.TimeKeeping;
+import com.macia.HRs.repository.EmployeeRepository;
 import com.macia.HRs.repository.TimeKeepingRepository;
 import com.macia.HRs.service.TimeKeepingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/api/timekeepings")
 public class TimeKeepingResource {
 
@@ -27,6 +32,9 @@ public class TimeKeepingResource {
 
     @Autowired
     private TimeKeepingRepository tkpRepo;
+    
+    @Autowired
+    private EmployeeRepository empRepo;
 
     @PersistenceContext
     EntityManager em;
@@ -39,9 +47,8 @@ public class TimeKeepingResource {
         if(record>0){
             return "Successfully synchronized "+record+" lines of data!";
         }
-        return "Everythin	g has been synchronized!";
-    }
-
+        return "Everything has been synchronized!";
+    }  
     @GetMapping("/{id}")
     @CrossOrigin("*")
     @ResponseBody
@@ -99,4 +106,18 @@ public class TimeKeepingResource {
         response.put("updated", Boolean.TRUE);
         return response;
     }
+    @PostMapping("/create/empcode/{empcode}")
+    @ResponseBody
+    @CrossOrigin("*")
+    public TimeKeeping createTimeKeeping(
+            @RequestBody TimeKeeping timeKeeping,
+            @PathVariable(value = "empcode") String empcode) throws Exception {
+        Employee e = empRepo.findByEmployeeCode(empcode);
+        timeKeeping.setCreateDate(LocalDateTime.now());
+        timeKeeping.setTimeCheckCodeOfEmp(e.getTimeCheckCode());
+        timeKeeping.setEmployee(e);
+        return tkpRepo.save(timeKeeping);
+    }
+    
+    
 }

@@ -32,6 +32,10 @@ const Item = (props) => {
     const handleUpdateCancel = () => {
         setUpdateVisible(false);
     }
+    const [id, setId] = useState("");
+    useEffect(() => {
+        setId(localStorage.getItem("id"))
+    }, [])
     const onFinish = () => {
         const department = {
             "departmentName": departmentName.current.props.value,
@@ -44,7 +48,7 @@ const Item = (props) => {
             duration: 1,
         };
         const actvity = {
-            "usr_ID": 1,
+            "usr_ID": id,
             "activityName": `Updated department with name ${props.e.departmentName}`,
             "isdeleted": false,
         }
@@ -74,7 +78,7 @@ const Item = (props) => {
             duration: 1,
         };
         const actvity = {
-            "usr_ID": 1,
+            "usr_ID": id,
             "activityName": `Deleted department with name ${props.e.departmentName}`,
             "isdeleted": false,
         }
@@ -142,58 +146,6 @@ const Item = (props) => {
                         </Form>
                     </Modal>
                 </Tooltip>
-
-                <Tooltip title="Employee">
-                    <Button
-                        shape="circle"
-                        icon={<UsergroupDeleteOutlined />}
-                        onClick={toggleEmplVisible}
-                        style={{ backgroundColor: "orange" }} />
-                    <Modal
-                        visible={visible}
-                        title="Employee's Department"
-                        onCancel={handleEmplCancel}
-                        width={1200}
-                        footer={[
-                            <Button key="back" onClick={handleEmplCancel}>
-                                Cancel
-                          </Button>,
-                        ]}
-                    >
-                        <div className="row">
-                            <div className="col-sm-2">
-                                <Card size="small">
-                                    <Statistic title="Active Employees" value={12000} prefix={<UserOutlined />} valueStyle={{ color: '#3f8600' }} />
-                                </Card>
-                                <Card style={{ marginTop: 15 }} size="small">
-                                    <Statistic title="Absent Employees" value={3} prefix={<UserOutlined />} valueStyle={{ color: '#cf1322' }} />
-                                </Card>
-
-                            </div>
-                            <div className="col-sm-10">
-                                <DatePicker style={{ marginBottom: 15, width: 250 }} />
-                                <Search
-                                    placeholder="Input department name"
-                                    onSearch={value => console.log(value)}
-                                    style={{ width: 250, marginLeft: 15 }}
-                                    size="middle"
-                                />
-                                <table className="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Employee id</th>
-                                            <th>Employee Name</th>
-                                            <th>Working Shift</th>
-                                            <th>Start Date</th>
-                                            <th>End Date</th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </div>
-                        </div>
-                    </Modal>
-                </Tooltip>
-
                 <Tooltip title="Delete">
                     <Popconfirm
                         placement="top"

@@ -1,9 +1,16 @@
-import React from 'react';
+import React,{useState,useEffect} from 'react';
 import { Col, Row } from 'antd';
 import MenuBar from '../Header/Index';
 import HeaderTop from '../Header/Header';
 import Table from './Table';
 const Index = (props) => {
+    const [id,setId]=useState("");
+    useEffect(()=>{
+      setId(localStorage.getItem("id"))
+    })
+    if(id===null){
+      window.location.href='/login';
+    }
     return (
        
                 <Table />

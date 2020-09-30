@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Tooltip, Button, Input, Popconfirm, Form, Modal, DatePicker, notification, Pagination } from "antd";
-import { VerticalAlignBottomOutlined, SubnodeOutlined } from "@ant-design/icons";
+import { Tooltip, Row, Col, Button, Select, Input, Popconfirm, Form, Modal, DatePicker, notification, Pagination } from "antd";
+import { VerticalAlignBottomOutlined, UsergroupAddOutlined, UserAddOutlined, SubnodeOutlined } from "@ant-design/icons";
 import Item from './Item';
 import './css/styles.css';
 import { useEffect, useRef } from 'react';
@@ -34,6 +34,10 @@ const Table = (props) => {
         labelCol: { span: 6 },
         wrapperCol: { span: 18 },
     };
+    const [id, setId] = useState("");
+    useEffect(() => {
+        setId(localStorage.getItem("id"))
+    },[])
     const onFinish = () => {
         if (startDate.current.props.value._i && departmentName.current.props.value) {
             const args = {
@@ -47,7 +51,7 @@ const Table = (props) => {
                 "isdeleted": false
             };
             const actvity = {
-                "usr_ID": 1,
+                "usr_ID": id,
                 "activityName": `Created new department with name ${departmentName.current.props.value}`,
                 "isdeleted": false,
             }
@@ -84,6 +88,7 @@ const Table = (props) => {
             setDepartments(res.data);
         })
     }, [fla])
+    console.log(departments);
     for (var i = 1; i <= Math.ceil(departments.length / perPage); i++) {
         pageNumbers.push(i);
     }
@@ -117,7 +122,7 @@ const Table = (props) => {
     return (
         <div>
             <div className="container">
-                <h5>Department:</h5>
+                <h5>Department</h5>
                 <div className="card">
                     <div className="card-header">
                         <div className="row align-items-center">
@@ -143,7 +148,7 @@ const Table = (props) => {
                                 <Tooltip placement="topRight" title="Add!">
                                     <Button
                                         id="btnaddempl"
-                                        icon={<SubnodeOutlined/>}
+                                        icon={<SubnodeOutlined />}
                                         type="primary"
                                         onClick={toggleModal}
                                         style={{ float: "right" }}>Create</Button>

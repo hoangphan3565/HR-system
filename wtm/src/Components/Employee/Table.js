@@ -7,6 +7,8 @@ import DepartmentService from '../../Services/DepartmentService';
 import PositionService from '../../Services/PositionServices';
 import moment from 'moment';
 import UserActivityService from '../../Services/UserActivityService';
+import axios from 'axios';
+import Cookies from 'js-cookie';
 const Table = (props) => {
     const [form] = Form.useForm();
     const search = useRef();
@@ -181,6 +183,8 @@ const Table = (props) => {
         }
     }, [searching])
     //chọn dept nhận pos
+    const loginInfo=Cookies.get("loginInfo");
+    console.log(loginInfo);
     useEffect(() => {
         if (posing && searching == "") {
             EmployeeServices.findByDeptAndPos(depting, posing).then(res => { setEmployees(res.data) })
@@ -294,8 +298,10 @@ const Table = (props) => {
     const { Search } = Input;
     const onShowSizeChange = (current, pageSize) => {
         setPerPage(pageSize);
-
     }
+    
+    
+
     const onChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     }
@@ -323,6 +329,10 @@ const Table = (props) => {
     const handleCancel = () => {
         setAddModal(false);
     }
+    const [id, setId] = useState("");
+    useEffect(() => {
+        setId(localStorage.getItem("id"))
+    })
     const onFinish = () => {
         const employee = {
             "employeeCode": code.current.props.value,
@@ -334,7 +344,7 @@ const Table = (props) => {
             "isdeleted": false
         }
         const actvity={
-            "usr_ID":1,
+            "usr_ID":id,
             "activityName":`Create employee with code ${code.current.props.value}`,
             "isdeleted":false,
         }

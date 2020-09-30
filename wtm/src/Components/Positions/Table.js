@@ -16,7 +16,7 @@ import {
 } from "@ant-design/icons";
 import Item from "./Item";
 import PositionServices from "../../Services/PositionServices";
-
+import UserActivityService from '../../Services/UserActivityService';
 const Table = (props) => {
   const { Option } = Select;
   const [currentPage, setCurrentPage] = useState(1);
@@ -54,8 +54,7 @@ const Table = (props) => {
         setPositions(res.data);
       });
     }
-    refresh();
-  }, [link]);
+  },[link]);
 
   useEffect(() => {
     PositionServices.get(link).then((res) => {
@@ -101,26 +100,37 @@ const Table = (props) => {
   const onChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   }
+  const [id, setId] = useState("");
+  useEffect(() => {
+    setId(localStorage.getItem("id"))
+  },[])
   const layout = {
     labelCol: { span: 6 },
     wrapperCol: { span: 18 },
   };
   const onFinish = () => {
+
     const position = {
       "positionName": name.current.props.value,
       "isDeleted": false
+    };
+    const actvity = {
+      "usr_ID": id,
+      "activityName": `Created new position with name ${position.positionName}`,
+      "isdeleted": false,
     };
     const args = {
       message: "Created Successfully",
       description: "An new position was added in Your System!",
       duration: 1
     };
-    PositionServices.add(1, position).then((res) => {
+    PositionServices.add(id, position).then((res) => {
       if (res.status === 200) {
         setAddModal(false);
         setLink("1");
         setLink("");
         form.resetFields();
+        UserActivityService.add(actvity).then();
         notification.success(args)
       }
     });

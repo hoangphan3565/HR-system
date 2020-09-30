@@ -44,11 +44,15 @@ const Table = (props) => {
         DailyScheduleService.list().then(res => {
             setDailySchedule(res.data)
         })
-    },[])
+    }, [])
 
     const handleCancel = () => {
         setModal(false)
     }
+    const [id, setId] = useState("");
+    useEffect(() => {
+        setId(localStorage.getItem("id"))
+    }, [])
     const toggleModal = () => {
         setModal(true);
     }
@@ -72,7 +76,7 @@ const Table = (props) => {
             "isDeleted": false
         }
         const actvity = {
-            "usr_ID": 1,
+            "usr_ID": id,
             "activityName": `Create new DailyShift by Daily Schedule with name ${dsc.current.props.value}`,
             "isdeleted": false,
         }
@@ -116,7 +120,7 @@ const Table = (props) => {
     })
     return (
         <div className="container">
-            <h5>Daily Shifts:</h5>
+            <h5>Daily Shifts</h5>
             <div className="card">
                 <div className="card-header">
                     <div className="row align-items-center">
@@ -165,14 +169,14 @@ const Table = (props) => {
                                     <Form.Item label="Daily Schedule" name="DailySch">
                                         <Select ref={dsc}>
                                             {
-                                               optionsDsc
+                                                optionsDsc
                                             }
                                         </Select>
                                     </Form.Item>
                                     <Form.Item label="Shift" name="Shift">
                                         <Select ref={sh}>
                                             {
-                                               optionsShift
+                                                optionsShift
                                             }
                                         </Select>
                                     </Form.Item>

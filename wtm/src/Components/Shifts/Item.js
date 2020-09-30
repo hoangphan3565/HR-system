@@ -11,7 +11,7 @@ import {
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import { useEffect } from "react";
-
+import UserActivityService from '../../Services/UserActivityService';
 import ShiftService from "../../Services/ShiftService";
 const Item = (props) => {
   const [visible, setVisible] = useState(false);
@@ -32,7 +32,16 @@ const Item = (props) => {
   const handleEmplCancel = () => {
     setVisible(false);
   };
+  const [idUser,setIdUser]=useState("");
+  useEffect(()=>{
+    setIdUser(localStorage.getItem("id"))
+  })
   const onDelete = () => {
+    const actvity = {
+      "usr_ID":idUser,
+      "activityName": `Updated shift with code ${props.e.sif_ID}`,
+      "isdeleted": false,
+    } 
     const args = {
       message: "Deleted Successfully",
       description: "A new shift was deleted in Your System !",
@@ -42,6 +51,7 @@ const Item = (props) => {
       props.test("done");
       props.test("");
       notification.success(args);
+      UserActivityService.add(actvity).then();
     });
   };
   const handleUpdateCancel = () => {
@@ -57,13 +67,20 @@ const Item = (props) => {
       description: "This shift was updated in Your System !",
       duration: 1,
     };
-    ShiftService.update(props.e.sif_ID,1, sif).then((res) => {
+    const actvity = {
+      "usr_ID":idUser,
+      "activityName": `Updated shift with code ${props.e.sif_ID}`,
+      "isdeleted": false,
+  } 
+  console.log(actvity);
+    ShiftService.update(props.e.sif_ID,idUser,sif).then((res) => {
      if(res.status===200){
       props.test("done");
       props.test("");
       setUpdateVisible(false);
-      form.resetFields();
+      form.resetFields(); 
       notification.success(args);
+      UserActivityService.add(actvity).then();
      }
     },);
   };
@@ -128,7 +145,7 @@ const Item = (props) => {
         <Tooltip title="Delete">
           <Popconfirm
             placement="top"
-            title="Are you sure delete this shift    !"
+            title="Are you sure delete this shift!"
             onConfirm={onDelete}
           >
             <Button
